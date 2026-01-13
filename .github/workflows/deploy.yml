@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-      - "feat/#1"
-      - "**"
+      - "feat/**"
   pull_request:
     branches:
       - main
@@ -46,6 +45,7 @@ jobs:
           target: "/home/ubuntu/deploy"
 
       - name: Deploy on EC2
+        if: github.ref == 'refs/heads/main'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
