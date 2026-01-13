@@ -2,9 +2,12 @@ name: Auto Deploy to EC2
 
 on:
   push:
-    branches: [ "main", "feat/#1" ]
+    branches:
+      - main
+      - "feat/#1"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -13,6 +16,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build jar
+        run: ./gradlew bootJar
 
       - name: Docker build
         run: docker build -t triples-server .
