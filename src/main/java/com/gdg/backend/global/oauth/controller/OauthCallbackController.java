@@ -1,10 +1,10 @@
 package com.gdg.backend.global.oauth.controller;
 
-//import com.gdg.backend.global.config.FrontendProperties; //프론트 화면 구현시 사용
 import com.gdg.backend.global.jwt.TokenProvider;
 import com.gdg.backend.global.oauth.dto.UserInfoDto;
 import com.gdg.backend.global.oauth.factory.SocialOauthServiceFactory;
 import com.gdg.backend.global.oauth.service.SocialOauthService;
+import com.gdg.backend.global.oauth.state.OAuthStateStore;
 import com.gdg.backend.user.domain.OauthProvider;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-
-@Tag(name = "Oauth를 이용하여 플랫폼 고유 아이디 가져오는 컨트롤러")
+@Tag(name = "OAuth 로그인 콜백")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class OauthCallbackController {
 
     private final SocialOauthServiceFactory serviceFactory;
     private final TokenProvider tokenProvider;
-    //private final FrontendProperties frontendProperties;
+    private final OAuthStateStore stateStore;
 
     @GetMapping("/callback/{provider}")
     public ResponseEntity<Map<String, Object>> callback(
@@ -43,6 +42,14 @@ public class OauthCallbackController {
             OauthProvider oauthProviderEnum = OauthProvider.valueOf(provider.toUpperCase());
             SocialOauthService oauth = serviceFactory.get(oauthProviderEnum);
 
+            if (oauthProviderEnum == OauthProvider.NAVER) {
+                if (state == null || !stateStore.consume(state)) {
+                    return ResponseEntity
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .body(Map.of("error", "INVALID_STATE"));
+                }
+            }
+
             UserInfoDto userInfo = (oauthProviderEnum == OauthProvider.NAVER)
                     ? oauth.getUserInfo(code, state)
                     : oauth.getUserInfo(code);
@@ -54,28 +61,16 @@ public class OauthCallbackController {
             );
 
             return ResponseEntity.ok(Map.of(
+                    "provider", oauthProviderEnum.name(),
                     "userInfo", userInfo,
                     "token", idToken
             ));
-//            String redirect =
-//                    frontendProperties.getRedirectUrl()
-//                            + "?idToken=" + URLEncoder.encode(idToken, StandardCharsets.UTF_8);
-//
-//            response.sendRedirect(redirect);
 
         } catch (Exception e) {
             log.error("OAuth callback failed", e);
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "OAUTH_FAILED"));
-
-//            String errorRedirect =
-//                    frontendProperties.getRedirectUrl()
-//                            + "?error=OAUTH_FAILED";
-//
-//            response.sendRedirect(errorRedirect);
-
         }
     }
 }
-
