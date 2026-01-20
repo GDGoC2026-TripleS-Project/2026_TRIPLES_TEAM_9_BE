@@ -2,83 +2,102 @@ package com.gdg.backend.global.oauth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gdg.backend.global.exception.BedRequestException;
+import com.gdg.backend.global.oauth.config.NaverProperties;
 import com.gdg.backend.global.oauth.dto.NaverUserInfoDto;
 import com.gdg.backend.global.oauth.dto.UserInfoDto;
 import com.gdg.backend.global.oauth.dto.provider.NaverTokenDto;
 import com.gdg.backend.global.oauth.dto.provider.NaverUserResponseDto;
+import com.gdg.backend.global.oauth.state.OAuthStateStore;
 import com.gdg.backend.user.domain.OauthProvider;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class NaverOauthService extends SocialOauthService {
 
-    public NaverOauthService(ObjectMapper objectMapper) {
+    private final NaverProperties props;
+    private final OAuthStateStore stateStore;
+
+    public NaverOauthService(
+            ObjectMapper objectMapper,
+            NaverProperties props,
+            OAuthStateStore stateStore
+    ) {
         super(objectMapper);
+        this.props = props;
+        this.stateStore = stateStore;
     }
 
-    @Value("${naver.token-uri}")
-    private String tokenUri;
-
-    @Value("${naver.user-info-uri}")
-    private String userInfoUri;
-
-    @Value("${naver.client-id}")
-    private String clientId;
-
-    @Value("${naver.client-secret}")
-    private String clientSecret;
-
-    @Value("${naver.redirect-uri}")
-    private String redirectUri;
-
     @Override
-    public OauthProvider getProviderType(){
+    public OauthProvider getProviderType() {
         return OauthProvider.NAVER;
     }
 
     @Override
     public UserInfoDto getUserInfo(String code) {
-        throw new BedRequestException("네이버는 사용할 수 없습니다.");
+        throw new BedRequestException("네이버는 state가 필요합니다. getUserInfo(code, state)를 사용하세요.");
     }
 
-    public UserInfoDto getUserInfo(String code, String state) throws Exception {
-        try{
-            String tokenJson = postForm(tokenUri, Map.of(
+    @Override
+    public UserInfoDto getUserInfo(String code, String state) {
+        try {
+            String tokenJson = postForm(props.getTokenUri(), Map.of(
                     "grant_type", "authorization_code",
-                    "client_id", clientId,
-                    "client_secret", clientSecret,
-                    "redirect_uri", redirectUri,
+                    "client_id", props.getClientId(),
+                    "client_secret", props.getClientSecret(),
+                    "redirect_uri", props.getRedirectUri(),
                     "code", code,
                     "state", state
             ));
 
-            NaverTokenDto naverTokenDto = objectMapper.readValue(tokenJson, NaverTokenDto.class);
+            log.info("naver token response: {}", tokenJson);
 
-            String userJson = getUserInfoFromProvider(naverTokenDto.getAccessToken());
+            NaverTokenDto tokenDto = objectMapper.readValue(tokenJson, NaverTokenDto.class);
+
+            String userJson = getUserInfoFromProvider(tokenDto.getAccessToken());
+            log.info("naver userinfo response: {}", userJson);
 
             NaverUserResponseDto userDto = objectMapper.readValue(userJson, NaverUserResponseDto.class);
 
             return NaverUserInfoDto.builder()
                     .attributes(userDto)
                     .build();
-        } catch (Exception e) {
-            throw new BedRequestException("네이버 토큰 파싱을 실패했습니다.");
-        }
 
+        } catch (Exception e) {
+            throw new BedRequestException("네이버 유저 정보 조회/파싱을 실패했습니다. error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getAuthorizationUrl() {
+        String state = UUID.randomUUID().toString();
+        stateStore.save(state);
+
+        return UriComponentsBuilder
+                .fromUriString(props.getAuthorizationUri())
+                .queryParam("response_type", "code")
+                .queryParam("client_id", props.getClientId())
+                .queryParam("redirect_uri", props.getRedirectUri())
+                .queryParam("state", state)
+                .build()
+                .toUriString();
     }
 
     private String getUserInfoFromProvider(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.setBearerAuth(accessToken);
 
         return restTemplate.exchange(
-                userInfoUri, HttpMethod.GET,
+                props.getUserInfoUri(),
+                HttpMethod.GET,
                 new HttpEntity<>(headers),
                 String.class
         ).getBody();
