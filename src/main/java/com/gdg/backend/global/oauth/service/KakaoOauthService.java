@@ -13,7 +13,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -47,13 +49,17 @@ public class KakaoOauthService extends SocialOauthService {
     @Override
     public UserInfoDto getUserInfo(String code) throws Exception {
         try{
-            String tokenJson = postForm(tokenUri, Map.of(
-                    "grant_type", "authorization_code",
-                    "client_id", clientId,
-                    "client_secret", clientSecret,
-                    "redirect_uri", redirectUri,
-                    "code", code
-            ));
+            Map<String, String> params = new HashMap<>();
+            params.put("grant_type", "authorization_code");
+            params.put("client_id", clientId);
+            params.put("redirect_uri", redirectUri);
+            params.put("code", code);
+
+            if (StringUtils.hasText(clientSecret)) {
+                params.put("client_secret", clientSecret);
+            }
+            String tokenJson = postForm(tokenUri, params);
+
             log.info(tokenJson);
 
             KakaoTokenDto kakaoTokenDto = objectMapper.readValue(tokenJson, KakaoTokenDto.class);
