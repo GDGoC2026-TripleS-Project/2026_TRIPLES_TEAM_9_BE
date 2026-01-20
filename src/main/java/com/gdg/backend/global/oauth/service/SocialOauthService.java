@@ -48,6 +48,8 @@ public abstract class SocialOauthService {
         return response.getBody();
     }
 
+    public abstract String getAuthorizationUrl();
+
     private MultiValueMap<String, String> convert(Map<String, String> params) {
         MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
         params.forEach(result::add);
