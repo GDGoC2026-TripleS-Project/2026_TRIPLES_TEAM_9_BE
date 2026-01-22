@@ -77,7 +77,7 @@ public class TokenProvider {
         return createToken(user.getId().toString(), Jwts.claims().build(), refreshTokenValidityMillis);
     }
 
-    public String idToken(OauthProvider provider, String providerId, String email) {
+    public String authToken(OauthProvider provider, String providerId, String email) {
         Claims claims = Jwts.claims()
                 .add("provider", provider.name())
                 .add("providerId", providerId)
