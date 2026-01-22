@@ -54,7 +54,7 @@ public class OauthCallbackController {
                     ? oauth.getUserInfo(code, state)
                     : oauth.getUserInfo(code);
 
-            String idToken = tokenProvider.idToken(
+            String authToken = tokenProvider.authToken(
                     userInfo.getProvider(),
                     userInfo.getProviderId(),
                     userInfo.getEmail()
@@ -63,7 +63,7 @@ public class OauthCallbackController {
             return ResponseEntity.ok(Map.of(
                     "provider", oauthProviderEnum.name(),
                     "userInfo", userInfo,
-                    "token", idToken
+                    "token", authToken
             ));
 
         } catch (Exception e) {

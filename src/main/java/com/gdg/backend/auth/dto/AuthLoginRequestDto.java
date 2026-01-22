@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 public class AuthLoginRequestDto {
     @NotBlank
-    private String idToken;
+    private String authToken;
 }

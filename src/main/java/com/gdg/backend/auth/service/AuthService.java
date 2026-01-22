@@ -23,7 +23,7 @@ public class AuthService {
     public TokenResponseDto login(AuthLoginRequestDto request) {
 
         SignupPrincipal principal =
-                tokenProvider.parseSignupToken(request.getIdToken());
+                tokenProvider.parseSignupToken(request.getAuthToken());
 
         User user = userRepository
                 .findByOauthProviderAndProviderId(
@@ -38,7 +38,7 @@ public class AuthService {
     public TokenResponseDto onboarding(
             AuthOnboardingRequestDto request
     ) {
-        SignupPrincipal principal = parseSignupToken(request.getIdToken());
+        SignupPrincipal principal = parseSignupToken(request.getAuthToken());
 
         User user = findPendingUser(principal);
 

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class AuthOnboardingRequestDto {
     @NotBlank
-    private String idToken;
+    private String authToken;
     @NotBlank
     private String nickname;
 }
