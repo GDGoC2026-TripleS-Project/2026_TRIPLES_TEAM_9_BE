@@ -23,10 +23,26 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
+    public GroupedOpenApi oauthApi() {
+        return GroupedOpenApi.builder()
+                .group("Oauth API")
+                .pathsToMatch("/api/**")
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi authApi() {
         return GroupedOpenApi.builder()
                 .group("Auth API")
-                .pathsToMatch("/api/**","/login","/mypage/**","/signup")
+                .pathsToMatch("/auth/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi userApi() {
+        return GroupedOpenApi.builder()
+                .group("User API")
+                .pathsToMatch("/user/**")
                 .build();
     }
 
