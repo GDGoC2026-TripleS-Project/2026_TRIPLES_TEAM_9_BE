@@ -31,7 +31,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "nickname", nullable = false)
@@ -45,28 +45,22 @@ public class User {
     @Column(name = "oauth_provider", nullable = false)
     private OauthProvider oauthProvider;
 
+    @Column(name = "provider_id", nullable = false)
+    private String providerId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_status", nullable = false)
     private UserStatus userStatus;
 
-    @Column(name = "provider_id", nullable = false)
-    private String providerId;
-
-    @Column(name = "profile_image_url", nullable = false)
-    private String profileImageUrl;
-
     @Column(name = "refresh_token", length = 500)
     private String refreshToken;
 
-    @Column(name = "phoneNumber", nullable = false)
-    private String phoneNumber;
-
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
@@ -76,28 +70,28 @@ public class User {
             Role role,
             OauthProvider oauthProvider,
             String providerId,
-            String profileImageUrl,
-            UserStatus userStatus,
-            String phoneNumber
+            UserStatus userStatus
     ) {
         this.email = email;
         this.nickname = nickname;
         this.role = role;
         this.oauthProvider = oauthProvider;
         this.providerId = providerId;
-        this.profileImageUrl = profileImageUrl;
         this.userStatus = userStatus;
-        this.phoneNumber = phoneNumber;
     }
 
     public static User fromOAuth(UserInfoDto info) {
+        String nickname = (info.getName() == null || info.getName().isBlank())
+                ? "USER_" + info.getProvider() + "_" + info.getProviderId()
+                : info.getName();
+
         return User.builder()
-                .oauthProvider(info.getProvider())
-                .providerId(info.getProviderId())
                 .email(info.getEmail())
-                .nickname(info.getName())
-//                .profileImageUrl(info.getProfileImageUrl())
+                .nickname(nickname)
                 .role(Role.USER)
+                .providerId(info.getProviderId())
+                .oauthProvider(info.getProvider())
+                .userStatus(UserStatus.ACTIVE)
                 .build();
     }
 
@@ -105,30 +99,28 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public void updateNickname(String nickname){
-        this.nickname = nickname;
-    }
-
-    public void updatePhoneNumber(String phoneNumber){ this.phoneNumber = phoneNumber; }
-
-    public void updateUserStatus(UserStatus userStatus){
-        this.userStatus = userStatus;
-    }
-
-    public void updateProfile(String nickname/*, String profileImageUrl*/) {
-        if (nickname != null) {
+    public void updateNickname(String nickname) {
+        if (nickname != null && !nickname.isBlank()) {
             this.nickname = nickname;
         }
-//        if (profileImageUrl != null) {
-//            this.profileImageUrl = profileImageUrl;
-//        }
+    }
+
+    public void updateUserStatus(UserStatus userStatus) {
+        if (userStatus != null) {
+            this.userStatus = userStatus;
+        }
     }
 
     public void updateRole(Role role) {
-        this.role = role;
+        if (role != null) {
+            this.role = role;
+        }
     }
 
-//    public void updateProfileImage(String profileImageUrl) {
-//        this.profileImageUrl = profileImageUrl;
-//    }
+    public void updateEmail(String email) {
+        // 필요할 때(추가정보 입력)만 세팅하도록 열어둠
+        if (email != null && !email.isBlank()) {
+            this.email = email;
+        }
+    }
 }
