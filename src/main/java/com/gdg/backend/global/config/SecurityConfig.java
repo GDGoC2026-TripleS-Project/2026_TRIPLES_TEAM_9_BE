@@ -43,8 +43,12 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
-                                "/api/health"
+                                "/api/health",
+                                "/auth/**"
                         ).permitAll()
+                        .requestMatchers(
+                                "/user/**"
+                        ).authenticated()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(configurationSource()))
