@@ -33,7 +33,7 @@ public class JwtFilter extends GenericFilterBean {
             return;
         }
 
-        String token = tokenProvider.revokeToken(httpRequest);
+        String token = tokenProvider.resolveToken(httpRequest);
 
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             Authentication authentication =

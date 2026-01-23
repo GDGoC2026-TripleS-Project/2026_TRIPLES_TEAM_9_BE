@@ -91,21 +91,27 @@ public class TokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
 
-        String role = claims.get("role", String.class);
-        if (role == null) {
-            throw new IllegalStateException("권한 정보가 없는 토큰입니다.");
+        if ("OAUTH_SIGNUP".equals(claims.getSubject())) {
+            throw new IllegalStateException("Signup 토큰은 인증에 사용할 수 없습니다.");
         }
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(role.split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        String role = claims.get("role", String.class);
+        if (role == null) {
+            throw new IllegalStateException("Access 토큰이 아닙니다.");
+        }
+
+        String authority = "ROLE_" + role;
 
         UserPrincipal principal =
                 new UserPrincipal(Long.valueOf(claims.getSubject()), role);
 
-        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+        return new UsernamePasswordAuthenticationToken(
+                principal,
+                null,
+                java.util.List.of(new SimpleGrantedAuthority(authority))
+        );
     }
+
 
     public SignupPrincipal parseSignupToken(String token) {
         Claims claims = parseClaims(token);
@@ -142,18 +148,14 @@ public class TokenProvider {
     }
 
     private Claims parseClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    public String revokeToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -161,4 +163,15 @@ public class TokenProvider {
         }
         return null;
     }
+
+
+    public Long getSubjectAsUserId(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return Long.valueOf(claims.getSubject());
+    }
+
 }

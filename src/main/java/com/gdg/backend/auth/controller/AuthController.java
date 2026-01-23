@@ -82,7 +82,6 @@ public class AuthController {
             HttpServletResponse response
     ) {
         AuthIssueResult result = authService.refresh(refreshToken);
-
         setRefreshCookie(response, result.tokens().refreshToken());
 
         return ApiResponse.success(
