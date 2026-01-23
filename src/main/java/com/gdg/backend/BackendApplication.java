@@ -1,6 +1,6 @@
 package com.gdg.backend;
 
-import com.gdg.backend.auth.config.SuperAdminProperties;
+import com.gdg.backend.api.auth.config.SuperAdminProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
