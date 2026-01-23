@@ -76,5 +76,10 @@ server:
 frontend:
   redirect-url: http://localhost:3000
 
+admin:
+  super:
+    email: whkang03@gmail.com
+    provider-id: 4702854778
+    oauth-provider: KAKAO
 
 
