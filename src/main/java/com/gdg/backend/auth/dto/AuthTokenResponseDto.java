@@ -1,4 +1,4 @@
-package com.gdg.backend.user.dto;
+package com.gdg.backend.auth.dto;
 
 import com.gdg.backend.user.domain.OauthProvider;
 import com.gdg.backend.user.domain.Role;
@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TokenResponseDto {
+public class AuthTokenResponseDto {
     private String accessToken;
-    private String refreshToken;
     private Long userId;
     private String email;
     private String nickname;
@@ -19,16 +18,14 @@ public class TokenResponseDto {
     private boolean newUser;
 
     @Builder
-    public TokenResponseDto(String accessToken,
-                            String refreshToken,
-                            Long userId,
-                            String email,
-                            String nickname,
-                            OauthProvider oauthProvider,
-                            Role role,
-                            boolean newUser) {
+    public AuthTokenResponseDto(String accessToken,
+                                Long userId,
+                                String email,
+                                String nickname,
+                                OauthProvider oauthProvider,
+                                Role role,
+                                boolean newUser) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
