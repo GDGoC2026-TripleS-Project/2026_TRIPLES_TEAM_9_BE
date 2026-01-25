@@ -1,5 +1,6 @@
 package com.gdg.backend.api.global.oauth.controller;
 
+import com.gdg.backend.api.global.config.FrontendProperties;
 import com.gdg.backend.api.global.jwt.TokenProvider;
 import com.gdg.backend.api.global.oauth.dto.UserInfoDto;
 import com.gdg.backend.api.global.oauth.factory.SocialOauthServiceFactory;
@@ -10,15 +11,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Tag(name = "OAuth 로그인 콜백")
 @RestController
@@ -30,9 +30,10 @@ public class OauthCallbackController {
     private final SocialOauthServiceFactory serviceFactory;
     private final TokenProvider tokenProvider;
     private final OAuthStateStore stateStore;
+    private final FrontendProperties frontendProperties;
 
     @GetMapping("/callback/{provider}")
-    public ResponseEntity<Map<String, Object>> callback(
+    public void callback(
             @PathVariable String provider,
             @RequestParam("code") String code,
             @RequestParam(value = "state", required = false) String state,
@@ -44,9 +45,8 @@ public class OauthCallbackController {
 
             if (oauthProviderEnum == OauthProvider.NAVER) {
                 if (state == null || !stateStore.consume(state)) {
-                    return ResponseEntity
-                            .status(HttpStatus.UNAUTHORIZED)
-                            .body(Map.of("error", "INVALID_STATE"));
+                    redirectToFrontend(response, provider, "error", "INVALID_STATE");
+                    return;
                 }
             }
 
@@ -60,17 +60,20 @@ public class OauthCallbackController {
                     userInfo.getEmail()
             );
 
-            return ResponseEntity.ok(Map.of(
-                    "provider", oauthProviderEnum.name(),
-                    "userInfo", userInfo,
-                    "token", authToken
-            ));
+            redirectToFrontend(response, provider, "token", authToken);
 
         } catch (Exception e) {
             log.error("OAuth callback failed", e);
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "OAUTH_FAILED"));
+            try {
+                redirectToFrontend(response, provider, "error", "OAUTH_FAILED");
+            } catch (Exception ignore) {}
         }
+    }
+
+    private void redirectToFrontend(HttpServletResponse response, String provider, String key, String value) throws Exception {
+        String base = frontendProperties.getRedirectUrl();
+        String encoded = URLEncoder.encode(value, StandardCharsets.UTF_8);
+        String url = base + "/oauth/callback/" + provider + "?" + key + "=" + encoded;
+        response.sendRedirect(url);
     }
 }
