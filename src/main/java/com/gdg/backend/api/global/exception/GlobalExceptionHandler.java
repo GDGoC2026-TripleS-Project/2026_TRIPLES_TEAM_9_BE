@@ -1,6 +1,8 @@
 package com.gdg.backend.api.global.exception;
 
 import com.gdg.backend.api.global.code.ErrorCode;
+import com.gdg.backend.api.global.exception.custom.UserAlreadyExistsException;
+import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.global.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
