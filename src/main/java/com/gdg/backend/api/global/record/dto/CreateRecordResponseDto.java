@@ -18,16 +18,4 @@ public class CreateRecordResponseDto {
     private String title;
     private String content;
     private String keyword;
-
-    public static CreateRecordResponseDto from(Record record) {
-        return CreateRecordResponseDto.builder()
-                .recordId(record.getId())
-                .userId(record.getUser().getId())
-                .recordCreatedAt(record.getRecordCreatedAt())
-                .category(record.getCategory())
-                .title(record.getTitle())
-                .content(record.getContent())
-                .keyword(record.getKeyword())
-                .build();
-    }
 }

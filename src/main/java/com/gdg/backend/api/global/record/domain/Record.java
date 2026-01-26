@@ -37,8 +37,8 @@ public class Record {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    //학습날짜(학습기록 생성 시간), 현재 단계에선 아직 안 쓰면 null 유지
-    @Column(name = "record_created_at")
+    //학습날짜(학습기록 생성 시간)
+    @Column(name = "record_created_at", nullable = false)
     private LocalDateTime recordCreatedAt;
 
     //학습기록 카테고리
@@ -59,14 +59,14 @@ public class Record {
     private String keyword;
 
     //학습기록 생성
-    public static Record create(User user, RecordCreateCommand cmd) {
+    public static Record create(User user, Category category, String title, String content, String keyword) {
         return Record.builder()
                 .user(user)
-                .recordCreatedAt(cmd.getRecordCreatedAt())
-                .category(cmd.getCategory())
-                .title(cmd.getTitle())
-                .content(cmd.getContent())
-                .keyword(cmd.getKeyword())
+                .category(category)
+                .title(title)
+                .content(content)
+                .keyword(keyword)
+                .recordCreatedAt(LocalDateTime.now())
                 .build();
     }
 }

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Builder
 public class RecordCreateCommand {
     private User user;
-    private LocalDateTime recordCreatedAt;
     private Category category;
     private String title;
     private String content;

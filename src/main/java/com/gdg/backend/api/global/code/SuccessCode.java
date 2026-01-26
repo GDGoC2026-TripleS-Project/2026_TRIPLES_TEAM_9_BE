@@ -19,6 +19,7 @@ public enum SuccessCode {
     USER_CREATED(101, HttpStatus.CREATED, "사용자가 정상적으로 생성되었습니다."),
     ADMIN_CREATED(103, HttpStatus.CREATED, "관리자 계정이 생성되었습니다."),
     TOKEN_REFRESH_SUCCESS(104, HttpStatus.OK, "RefreshToken이 정상적으로 생성되었습니다."),
+    RECORD_CREATED(105, HttpStatus.CREATED, "학습기록이 정상적으로 생성되었습니다."),
 
     //202
     UPDATE(200, HttpStatus.OK, "게시판 수정이 정상적으로 처리되었습니다."),

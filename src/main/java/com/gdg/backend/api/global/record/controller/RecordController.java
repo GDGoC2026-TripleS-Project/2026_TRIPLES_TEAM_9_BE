@@ -1,4 +1,35 @@
 package com.gdg.backend.api.global.record.controller;
 
+import com.gdg.backend.api.global.code.SuccessCode;
+import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
+import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
+import com.gdg.backend.api.global.record.service.RecordService;
+import com.gdg.backend.api.global.response.ApiResponse;
+import com.gdg.backend.api.global.security.UserPrincipal;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/record")
 public class RecordController {
+
+    private final RecordService recordService;
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<CreateRecordResponseDto>> create(
+            @Valid @RequestBody CreateRecordRequestDto req,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+            ){
+        Long userId = userPrincipal.userId();
+        CreateRecordResponseDto res = recordService.create(userId, req);
+
+        return ApiResponse.success(SuccessCode.RECORD_CREATED, res);
+    }
 }
