@@ -116,11 +116,4 @@ public class User {
             this.role = role;
         }
     }
-
-    public void updateEmail(String email) {
-        // 필요할 때(추가정보 입력)만 세팅하도록 열어둠
-        if (email != null && !email.isBlank()) {
-            this.email = email;
-        }
-    }
 }
