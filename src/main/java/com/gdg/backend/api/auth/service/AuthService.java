@@ -34,6 +34,10 @@ public class AuthService {
                 .findByOauthProviderAndProviderId(principal.oauthProvider(), principal.providerId())
                 .orElseGet(() -> signup(principal));
 
+        if (user.getRole() != Role.SUPER_ADMIN && isSuperAdmin(principal)) {
+            user.updateRole(Role.SUPER_ADMIN);
+        }
+
         IssuedTokens tokens = issueTokens(user);
         return toIssueResult(user, tokens);
     }
@@ -134,7 +138,11 @@ public class AuthService {
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
 
         if (user.getUserStatus() != UserStatus.PENDING) {
-            throw new IllegalStateException("온보딩 대상 사용자가 아닙니다.");
+            throw new IllegalStateException("회원가입 대상 사용자가 아닙니다.");
+        }
+
+        if (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(principal.email())) {
+            throw new IllegalStateException("토큰 정보와 사용자 정보가 일치하지 않습니다.");
         }
 
         return user;

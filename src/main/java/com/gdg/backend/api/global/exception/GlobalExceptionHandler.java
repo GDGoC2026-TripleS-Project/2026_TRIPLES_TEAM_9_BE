@@ -1,6 +1,8 @@
 package com.gdg.backend.api.global.exception;
 
 import com.gdg.backend.api.global.code.ErrorCode;
+import com.gdg.backend.api.global.exception.custom.UserAlreadyExistsException;
+import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.global.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(UserAlreadyExistsException e){
+    public ResponseEntity<ApiResponse<Void>> handleUserAlreadyExistsException(UserAlreadyExistsException e){
         return ApiResponse.error(ErrorCode.USER_ALREADY_EXISTS);
     }
 

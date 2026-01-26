@@ -1,7 +1,7 @@
 package com.gdg.backend.api.global.oauth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gdg.backend.api.global.exception.BedRequestException;
+import com.gdg.backend.api.global.exception.custom.BedRequestException;
 import com.gdg.backend.api.global.oauth.config.NaverProperties;
 import com.gdg.backend.api.global.oauth.dto.NaverUserInfoDto;
 import com.gdg.backend.api.global.oauth.dto.UserInfoDto;
