@@ -58,10 +58,11 @@ public class AuthController {
     @Operation(summary = "신규 회원가입", description = "신규 유저들은 닉네임과 유형을 선택합니다.")
     @PostMapping(
             value = "/onboarding",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<ApiResponse<AuthTokenResponseDto>> onboarding(
-            @RequestPart("data") @Valid AuthOnboardingRequestDto request,
+            @RequestBody @Valid AuthOnboardingRequestDto request,
             HttpServletResponse response
     ) {
         AuthIssueResult result = authService.onboarding(request);
