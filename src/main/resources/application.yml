@@ -74,7 +74,7 @@ server:
   port: 8080
 
 frontend:
-  redirect-url: http://localhost:3000
+  redirect-url: ${FRONTEND_REDIRECT_URL}
 
 admin:
   super:
