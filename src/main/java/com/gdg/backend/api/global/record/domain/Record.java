@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -21,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,15 +48,16 @@ public class Record {
 
     //학습기록 카테고리
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 10)
     private Category category;
 
     //학습기록 제목
-    @Column(name = "record_title", nullable = false, length = 200)
+    @Column(name = "record_title", nullable = false, length = 500)
     private String title;
 
     //학습기록 내용
-    @Column(name = "record_content", nullable = false, length = 1000)
+    @Lob
+    @Column(name = "record_content", nullable = false)
     private String content;
 
     //학습기록 키워드
