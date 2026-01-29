@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -30,13 +32,15 @@ public class RecordService {
     public CreateRecordResponseDto create(Long userId, CreateRecordRequestDto req) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다."));
 
+        List<String> keywords = normalizeKeywords(req.getKeywords());
+
         Record record = Record.create(
                 user,
                 req.getLearningDate(),
                 req.getCategory(),
                 req.getTitle(),
                 req.getContent(),
-                req.getKeywords()
+                keywords
         );
 
         Record saved = recordRepository.save(record);
@@ -62,5 +66,15 @@ public class RecordService {
         }
 
         return records.map(RecordListResponseDto::from);
+    }
+
+    //keyword 중복인지 확인용
+    private List<String> normalizeKeywords(List<String> keywords) {
+        return keywords.stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(String::toLowerCase)
+                .distinct()
+                .toList();
     }
 }
