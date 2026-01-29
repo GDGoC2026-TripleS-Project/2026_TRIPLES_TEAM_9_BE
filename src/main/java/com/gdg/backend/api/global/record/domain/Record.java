@@ -1,7 +1,9 @@
 package com.gdg.backend.api.global.record.domain;
 
 import com.gdg.backend.api.user.domain.User;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,7 +20,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,14 +37,14 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 로그인한 사용자인지 확인용
+    //사용자 ID(로그인한 사용자인지 확인용)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    //학습날짜(학습기록 생성 시간)
-    @Column(name = "record_created_at", nullable = false)
-    private LocalDateTime recordCreatedAt;
+    //학습날짜(사용자에게 받음)
+    @Column(name = "learning_date", nullable = false)
+    private LocalDate learningDate;
 
     //학습기록 카테고리
     @Enumerated(EnumType.STRING)
@@ -47,26 +52,31 @@ public class Record {
     private Category category;
 
     //학습기록 제목
-    @Column(name = "record_title", nullable = false)
+    @Column(name = "record_title", nullable = false, length = 200)
     private String title;
 
     //학습기록 내용
-    @Column(name = "record_content", nullable = false)
+    @Column(name = "record_content", nullable = false, length = 1000)
     private String content;
 
     //학습기록 키워드
-    @Column(name = "record_keyword", nullable = false)
-    private String keyword;
+    @ElementCollection
+    @CollectionTable(
+            name = "record_keywords",
+            joinColumns = @JoinColumn(name = "record_id")
+    )
+    @Column(name = "keyword", nullable = false)
+    private List<String> keywords = new ArrayList<>();
 
     //학습기록 생성
-    public static Record create(User user, Category category, String title, String content, String keyword) {
+    public static Record create(User user, LocalDate learningDate, Category category, String title, String content, List<String> keywords) {
         return Record.builder()
                 .user(user)
+                .learningDate(learningDate)
                 .category(category)
                 .title(title)
                 .content(content)
-                .keyword(keyword)
-                .recordCreatedAt(LocalDateTime.now())
+                .keywords(keywords)
                 .build();
     }
 }

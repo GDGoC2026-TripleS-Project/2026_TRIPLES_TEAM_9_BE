@@ -5,6 +5,7 @@ import com.gdg.backend.api.global.record.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,10 +13,5 @@ import java.time.LocalDateTime;
 public class CreateRecordResponseDto {
 
     private Long recordId;
-    private Long userId;
-    private LocalDateTime recordCreatedAt;
-    private Category category;
-    private String title;
-    private String content;
-    private String keyword;
+    private LocalDate learningDate;
 }

@@ -1,7 +1,7 @@
 package com.gdg.backend.api.global.record.service;
 
 import com.gdg.backend.api.global.code.ErrorCode;
-import com.gdg.backend.api.global.exception.UserNotFoundException;
+import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
 import com.gdg.backend.api.global.record.repository.RecordRepository;
@@ -26,17 +26,17 @@ public class RecordService {
 
         Record record = Record.create(
                 user,
+                req.getLearningDate(),
                 req.getCategory(),
                 req.getTitle(),
                 req.getContent(),
-                req.getKeyword()
+                req.getKeywords()
         );
 
         Record saved = recordRepository.save(record);
 
         return CreateRecordResponseDto.builder()
                 .recordId(saved.getId())
-                .recordCreatedAt(saved.getRecordCreatedAt())
                 .build();
     }
 }
