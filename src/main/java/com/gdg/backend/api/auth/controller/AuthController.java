@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,7 +93,7 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃", description = "refreshToken 쿠키를 삭제합니다.")
-    @PostMapping("/logout")
+    @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
         cookieUtil.deleteCookie(response, REFRESH_COOKIE_NAME, cookieSecure, cookieSameSite, COOKIE_PATH);
         return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
