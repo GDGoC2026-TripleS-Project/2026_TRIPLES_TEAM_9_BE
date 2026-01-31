@@ -1,7 +1,15 @@
 package com.gdg.backend.api.user.domain;
 
-import com.gdg.backend.api.global.oauth.dto.UserInfoDto;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,21 +86,6 @@ public class User {
         this.oauthProvider = oauthProvider;
         this.providerId = providerId;
         this.userStatus = userStatus;
-    }
-
-    public static User fromOAuth(UserInfoDto info) {
-        String nickname = (info.getName() == null || info.getName().isBlank())
-                ? "USER_" + info.getProvider() + "_" + info.getProviderId()
-                : info.getName();
-
-        return User.builder()
-                .email(info.getEmail())
-                .nickname(nickname)
-                .role(Role.USER)
-                .providerId(info.getProviderId())
-                .oauthProvider(info.getProvider())
-                .userStatus(UserStatus.ACTIVE)
-                .build();
     }
 
     public void updateRefreshToken(String refreshToken) {
