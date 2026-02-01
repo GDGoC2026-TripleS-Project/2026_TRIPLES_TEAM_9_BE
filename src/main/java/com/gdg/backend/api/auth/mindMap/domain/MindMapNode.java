@@ -43,6 +43,7 @@ public class MindMapNode {
     @JoinColumn(name = "mind_map_id", nullable = false)
     private MindMap mindMap;
 
+    //merge 되면 Category로 변경
     @Enumerated(EnumType.STRING)
     private Keyword keyword;
 
