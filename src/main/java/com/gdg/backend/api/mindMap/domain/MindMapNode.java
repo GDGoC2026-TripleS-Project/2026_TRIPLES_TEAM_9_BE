@@ -1,8 +1,10 @@
-package com.gdg.backend.api.auth.mindMap.domain;
+package com.gdg.backend.api.mindMap.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,25 +17,24 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AutoCloseable.class)
 @Table(
-        name = "mind_map_edge",
+        name = "mind_map_node",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_mind_map_edge",
-                        columnNames = {"mind_map_id", "source_node_id", "target_node_id"}
+                        name = "uk_mind_map_keyword",
+                        columnNames = {"mind_map_id", "keyword_id"}
                 )
         }
 )
-public class MindMapEdge {
-
+public class MindMapNode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,18 +43,27 @@ public class MindMapEdge {
     @JoinColumn(name = "mind_map_id", nullable = false)
     private MindMap mindMap;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_node_id", nullable = false)
-    private MindMapNode source;
+    //merge 되면 Category로 변경
+    @Enumerated(EnumType.STRING)
+    private Keyword keyword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_node_id", nullable = false)
-    private MindMapNode target;
+    @Column(name = "title", nullable = false, length = 80)
+    private String title;
 
-    @Column(name = "weight", nullable = false)
-    private int weight = 1;
+    @Column(name = "category", length = 20)
+    private String category;
+
+    @Column(name = "x", nullable = false)
+    private int x;
+
+    @Column(name = "y", nullable = false)
+    private int y;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }
