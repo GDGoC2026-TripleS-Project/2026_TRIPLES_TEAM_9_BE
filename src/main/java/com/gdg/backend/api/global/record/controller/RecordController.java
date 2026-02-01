@@ -39,11 +39,12 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_CREATED, res);
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getRecords(
+    @GetMapping("/lists")
+    public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getMyRecords(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(required = false) Category category
             ){
-        return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getRecords(page, category));
+        return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getMyRecords(userPrincipal.userId(), page, category));
     }
 }

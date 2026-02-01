@@ -50,7 +50,7 @@ public class RecordService {
                 .build();
     }
 
-    public Page<RecordListResponseDto> getRecords(int page, Category category) {
+    public Page<RecordListResponseDto> getMyRecords(Long userId, int page, Category category) {
         Pageable pageable = PageRequest.of(
                 page,
                 PAGE_SIZE,
@@ -60,9 +60,9 @@ public class RecordService {
         Page<Record> records;
 
         if (category == null) {
-            records = recordRepository.findAll(pageable);
+            records = recordRepository.findByUserId(userId, pageable);
         } else {
-            records = recordRepository.findByCategory(category, pageable);
+            records = recordRepository.findByUserIdAndCategory(userId, category, pageable);
         }
 
         return records.map(RecordListResponseDto::from);

@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
-    Page<Record> findByCategory(Category category, Pageable pageable);
+    Page<Record> findByUserId(Long userId, Pageable pageable);
+
+    Page<Record> findByUserIdAndCategory(Long userId, Category category, Pageable pageable);
 }
