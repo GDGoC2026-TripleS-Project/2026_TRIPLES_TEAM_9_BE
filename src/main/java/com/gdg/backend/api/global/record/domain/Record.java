@@ -67,6 +67,7 @@ public class Record {
             joinColumns = @JoinColumn(name = "record_id")
     )
     @Column(name = "keyword", nullable = false)
+    @Builder.Default
     private List<String> keywords = new ArrayList<>();
 
     //학습기록 생성

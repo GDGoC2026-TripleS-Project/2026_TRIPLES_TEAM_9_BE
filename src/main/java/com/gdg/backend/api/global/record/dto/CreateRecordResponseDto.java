@@ -10,5 +10,4 @@ import java.time.LocalDate;
 public class CreateRecordResponseDto {
 
     private Long recordId;
-    private LocalDate learningDate;
 }
