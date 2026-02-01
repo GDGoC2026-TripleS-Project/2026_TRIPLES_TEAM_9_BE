@@ -43,8 +43,8 @@ public class MindMapNode {
     @JoinColumn(name = "mind_map_id", nullable = false)
     private MindMap mindMap;
 
-    //merge 되면 Category로 변경
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "keyword_id")
     private Keyword keyword;
 
     @Column(name = "title", nullable = false, length = 80)
