@@ -4,6 +4,7 @@ import com.gdg.backend.api.global.code.SuccessCode;
 import com.gdg.backend.api.global.record.domain.Category;
 import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
+import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
 import com.gdg.backend.api.global.record.service.RecordService;
 import com.gdg.backend.api.global.response.ApiResponse;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +48,13 @@ public class RecordController {
             @RequestParam(required = false) Category category
             ){
         return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getMyRecords(userPrincipal.userId(), page, category));
+    }
+
+    @GetMapping("/details/{recordId}")
+    public ResponseEntity<ApiResponse<RecordDetailResponseDto>> getRecordDetails(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long recordId
+            ) {
+        return ApiResponse.success(SuccessCode.RECORD_DETAILS_SUCCESS, recordService.getRecordDetails(userPrincipal.userId(), recordId));
     }
 }

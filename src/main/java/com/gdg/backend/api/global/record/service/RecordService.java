@@ -1,9 +1,11 @@
 package com.gdg.backend.api.global.record.service;
 
+import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.global.record.domain.Category;
 import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
+import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
 import com.gdg.backend.api.global.record.repository.RecordRepository;
 import com.gdg.backend.api.global.record.domain.Record;
@@ -66,6 +68,12 @@ public class RecordService {
         }
 
         return records.map(RecordListResponseDto::from);
+    }
+
+    public RecordDetailResponseDto getRecordDetails(Long userId, Long recordId) {
+        Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
+
+        return RecordDetailResponseDto.from(record);
     }
 
     //keyword 중복인지 확인용

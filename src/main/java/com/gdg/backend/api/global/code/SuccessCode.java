@@ -14,6 +14,7 @@ public enum SuccessCode {
     LOGOUT_SUCCESS(3, HttpStatus.OK, "로그아웃이 완료되었습니다."),
     PROCESS_SUCCESS(4, HttpStatus.OK, "정상적으로 처리되었습니다."),
     RECORD_LIST_SUCCESS(5,HttpStatus.OK, "학습 기록 조회가 완료되었습니다."),
+    RECORD_DETAILS_SUCCESS(6, HttpStatus.OK, "학습 기록 세부 정보 조회가 완료되었습니다."),
 
     //201
     CREATED(100, HttpStatus.CREATED, "게시판 작성 요청이 정상적으로 처리되었습니다."),
