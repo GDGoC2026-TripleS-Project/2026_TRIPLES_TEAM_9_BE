@@ -6,6 +6,8 @@ import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
+import com.gdg.backend.api.global.record.dto.UpdateRecordDetailRequestDto;
+import com.gdg.backend.api.global.record.dto.UpdateRecordDetailResponseDto;
 import com.gdg.backend.api.global.record.service.RecordService;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
@@ -18,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +44,7 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_CREATED, res);
     }
 
+    //학습기록 전체/카테고리별 조회
     @GetMapping("/lists")
     public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getMyRecords(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -50,11 +54,24 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getMyRecords(userPrincipal.userId(), page, category));
     }
 
+    //학습기록 세부 정보 조회
     @GetMapping("/details/{recordId}")
     public ResponseEntity<ApiResponse<RecordDetailResponseDto>> getRecordDetails(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long recordId
             ) {
         return ApiResponse.success(SuccessCode.RECORD_DETAILS_SUCCESS, recordService.getRecordDetails(userPrincipal.userId(), recordId));
+    }
+
+    //성공 시 수정된 값이 반환됨
+    @PutMapping("/details-update/{recordId}")
+    public ResponseEntity<ApiResponse<UpdateRecordDetailResponseDto>> updateRecordDetails(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long recordId,
+            @RequestBody @Valid UpdateRecordDetailRequestDto req
+    ) {
+        UpdateRecordDetailResponseDto res = recordService.updateRecord(userPrincipal.userId(), recordId, req);
+
+        return ApiResponse.success(SuccessCode.RECORD_UPDATE_SUCCESS, res);
     }
 }

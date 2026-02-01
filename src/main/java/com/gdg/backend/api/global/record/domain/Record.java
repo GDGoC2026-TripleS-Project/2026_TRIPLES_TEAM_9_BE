@@ -81,4 +81,13 @@ public class Record {
                 .keywords(keywords)
                 .build();
     }
+
+    public void update(LocalDate learningDate, Category category, String title, String content, List<String> keywords) {
+        this.learningDate = learningDate;
+        this.category = category;
+        this.title = title;
+        this.content = content;
+        this.keywords.clear();
+        this.keywords.addAll(keywords);
+    }
 }

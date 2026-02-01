@@ -7,6 +7,8 @@ import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
 import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
+import com.gdg.backend.api.global.record.dto.UpdateRecordDetailRequestDto;
+import com.gdg.backend.api.global.record.dto.UpdateRecordDetailResponseDto;
 import com.gdg.backend.api.global.record.repository.RecordRepository;
 import com.gdg.backend.api.global.record.domain.Record;
 import com.gdg.backend.api.user.domain.User;
@@ -74,6 +76,23 @@ public class RecordService {
         Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
 
         return RecordDetailResponseDto.from(record);
+    }
+
+    @Transactional
+    public UpdateRecordDetailResponseDto updateRecord(Long userId, Long recordId, UpdateRecordDetailRequestDto req) {
+        Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
+
+        List<String> keywords = normalizeKeywords(req.getKeywords());
+
+        record.update(
+                req.getLearningDate(),
+                req.getCategory(),
+                req.getTitle(),
+                req.getContent(),
+                keywords
+        );
+
+        return UpdateRecordDetailResponseDto.from(record);
     }
 
     //keyword 중복인지 확인용
