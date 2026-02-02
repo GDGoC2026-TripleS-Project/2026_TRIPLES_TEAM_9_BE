@@ -104,6 +104,9 @@ public class RecordService {
 
     //keyword 중복인지 확인용
     private List<String> normalizeKeywords(List<String> keywords) {
+        if (keywords == null || keywords.isEmpty()) {
+            return List.of();
+        }
         return keywords.stream()
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
