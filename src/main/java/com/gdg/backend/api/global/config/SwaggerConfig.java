@@ -46,4 +46,12 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi recordApi() {
+        return GroupedOpenApi.builder()
+                .group("Record API")
+                .pathsToMatch("/record/**")
+                .build();
+    }
+
 }
