@@ -1,6 +1,7 @@
 package com.gdg.backend.api.global.exception;
 
 import com.gdg.backend.api.global.code.ErrorCode;
+import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserAlreadyExistsException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.global.response.ApiResponse;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
                 ErrorCode.ACCESS_DENIED,
                 e.getMessage()
         );
+    }
+
+    @ExceptionHandler(RecordNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleRecordNotFound(RecordNotFoundException e) {
+        log.warn("RecordNotFoundException", e);
+        return ApiResponse.error(ErrorCode.RECORD_NOT_FOUND, e.getMessage());
     }
 
 }
