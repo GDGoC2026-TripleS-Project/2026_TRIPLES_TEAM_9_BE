@@ -1,31 +1,30 @@
-package com.gdg.backend.api.global.record.service;
+package com.gdg.backend.api.record.service;
 
 import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
-import com.gdg.backend.api.global.record.domain.Category;
-import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
-import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
-import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
-import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
-import com.gdg.backend.api.global.record.dto.UpdateRecordDetailRequestDto;
-import com.gdg.backend.api.global.record.dto.UpdateRecordDetailResponseDto;
-import com.gdg.backend.api.global.record.repository.RecordRepository;
-import com.gdg.backend.api.global.record.domain.Record;
+import com.gdg.backend.api.record.domain.Category;
+import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
+import com.gdg.backend.api.record.dto.CreateRecordResponseDto;
+import com.gdg.backend.api.record.dto.RecordDetailResponseDto;
+import com.gdg.backend.api.record.dto.RecordListResponseDto;
+import com.gdg.backend.api.record.dto.UpdateRecordDetailRequestDto;
+import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
+import com.gdg.backend.api.record.repository.RecordRepository;
+import com.gdg.backend.api.record.domain.Record;
 import com.gdg.backend.api.user.domain.User;
 import com.gdg.backend.api.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RecordService {
 
     private final RecordRepository recordRepository;
@@ -33,6 +32,7 @@ public class RecordService {
 
     private static final int PAGE_SIZE = 4;
 
+    @Transactional
     public CreateRecordResponseDto create(Long userId, CreateRecordRequestDto req) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다."));
 
@@ -54,6 +54,7 @@ public class RecordService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public Page<RecordListResponseDto> getMyRecords(Long userId, int page, Category category) {
         Pageable pageable = PageRequest.of(
                 page,
@@ -72,6 +73,7 @@ public class RecordService {
         return records.map(RecordListResponseDto::from);
     }
 
+    @Transactional(readOnly = true)
     public RecordDetailResponseDto getRecordDetails(Long userId, Long recordId) {
         Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
 

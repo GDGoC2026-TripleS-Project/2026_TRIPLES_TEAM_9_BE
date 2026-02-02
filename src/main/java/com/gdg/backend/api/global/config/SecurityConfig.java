@@ -48,7 +48,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(
                                 "/user/**",
-                                "/mindmaps/**"
+                                "/record/**"
                         ).authenticated()
                         .anyRequest().authenticated()
                 )

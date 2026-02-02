@@ -47,10 +47,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi mindMapApi() {
+    public GroupedOpenApi recordApi() {
         return GroupedOpenApi.builder()
-                .group("MindMap API")
-                .pathsToMatch("/mindmaps/**")
+                .group("Record API")
+                .pathsToMatch("/record/**")
                 .build();
     }
 
