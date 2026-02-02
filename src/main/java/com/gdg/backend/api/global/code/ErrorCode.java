@@ -45,7 +45,10 @@ public enum ErrorCode {
     //server
     INTERNAL_SERVER_ERROR(90001, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
     DATABASE_ERROR(90002, HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 처리 중 오류가 발생했습니다."),
-    EXTERNAL_API_ERROR(90003, HttpStatus.BAD_GATEWAY, "외부 API 호출 중 오류가 발생했습니다.");
+    EXTERNAL_API_ERROR(90003, HttpStatus.BAD_GATEWAY, "외부 API 호출 중 오류가 발생했습니다."),
+
+    //record
+    RECORD_NOT_FOUND(12001, HttpStatus.NOT_FOUND, "학습 기록을 찾을 수 없습니다.");
 
     private final int code;
     private final HttpStatus status;
