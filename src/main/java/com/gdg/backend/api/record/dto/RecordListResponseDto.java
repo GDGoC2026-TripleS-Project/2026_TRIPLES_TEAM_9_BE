@@ -1,7 +1,7 @@
-package com.gdg.backend.api.global.record.dto;
+package com.gdg.backend.api.record.dto;
 
-import com.gdg.backend.api.global.record.domain.Category;
-import com.gdg.backend.api.global.record.domain.Record;
+import com.gdg.backend.api.record.domain.Category;
+import com.gdg.backend.api.record.domain.Record;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

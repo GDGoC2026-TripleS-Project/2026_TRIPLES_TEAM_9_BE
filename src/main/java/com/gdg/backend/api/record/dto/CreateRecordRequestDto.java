@@ -1,6 +1,6 @@
-package com.gdg.backend.api.global.record.dto;
+package com.gdg.backend.api.record.dto;
 
-import com.gdg.backend.api.global.record.domain.Category;
+import com.gdg.backend.api.record.domain.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
