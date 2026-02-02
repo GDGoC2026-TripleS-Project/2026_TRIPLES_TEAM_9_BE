@@ -73,7 +73,7 @@ public class RecordController {
     ) {
         UpdateRecordDetailResponseDto res = recordService.updateRecord(userPrincipal.userId(), recordId, req);
 
-        return ApiResponse.success(SuccessCode.RECORD_UPDATE_SUCCESS, res);
+        return ApiResponse.success(SuccessCode.RECORD_UPDATE, res);
     }
 
     //성공 시 data는 null 값 반환됨

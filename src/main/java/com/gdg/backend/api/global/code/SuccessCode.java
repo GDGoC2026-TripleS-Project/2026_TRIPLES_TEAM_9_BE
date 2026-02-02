@@ -27,7 +27,7 @@ public enum SuccessCode {
     UPDATE(200, HttpStatus.OK, "게시판 수정이 정상적으로 처리되었습니다."),
     USER_UPDATE(201, HttpStatus.OK, "사용자 수정이 정상적으로 처리되었습니다."),
     IMAGE_UPDATE(203, HttpStatus.OK, "이미지 변경이 정상적으로 처리되었습니다."),
-    RECORD_UPDATE_SUCCESS(204, HttpStatus.OK, "학습 기록 세부 정보 수정이 정상적으로 처리되었습니다."),
+    RECORD_UPDATE(204, HttpStatus.OK, "학습 기록 세부 정보 수정이 정상적으로 처리되었습니다."),
 
     //203
 
