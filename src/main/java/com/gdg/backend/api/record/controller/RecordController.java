@@ -1,14 +1,14 @@
-package com.gdg.backend.api.global.record.controller;
+package com.gdg.backend.api.record.controller;
 
 import com.gdg.backend.api.global.code.SuccessCode;
-import com.gdg.backend.api.global.record.domain.Category;
-import com.gdg.backend.api.global.record.dto.CreateRecordRequestDto;
-import com.gdg.backend.api.global.record.dto.CreateRecordResponseDto;
-import com.gdg.backend.api.global.record.dto.RecordDetailResponseDto;
-import com.gdg.backend.api.global.record.dto.RecordListResponseDto;
-import com.gdg.backend.api.global.record.dto.UpdateRecordDetailRequestDto;
-import com.gdg.backend.api.global.record.dto.UpdateRecordDetailResponseDto;
-import com.gdg.backend.api.global.record.service.RecordService;
+import com.gdg.backend.api.record.domain.Category;
+import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
+import com.gdg.backend.api.record.dto.CreateRecordResponseDto;
+import com.gdg.backend.api.record.dto.RecordDetailResponseDto;
+import com.gdg.backend.api.record.dto.RecordListResponseDto;
+import com.gdg.backend.api.record.dto.UpdateRecordDetailRequestDto;
+import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
+import com.gdg.backend.api.record.service.RecordService;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
 import jakarta.validation.Valid;
@@ -19,9 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,7 +65,7 @@ public class RecordController {
     }
 
     //성공 시 수정된 값이 반환됨
-    @PutMapping("/details-update/{recordId}")
+    @PatchMapping("/update/{recordId}")
     public ResponseEntity<ApiResponse<UpdateRecordDetailResponseDto>> updateRecordDetails(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PathVariable Long recordId,

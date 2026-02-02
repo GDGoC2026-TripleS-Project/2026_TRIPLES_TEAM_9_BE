@@ -1,4 +1,4 @@
-package com.gdg.backend.api.global.record.domain;
+package com.gdg.backend.api.record.domain;
 
 public enum Category {
     LECTURE,

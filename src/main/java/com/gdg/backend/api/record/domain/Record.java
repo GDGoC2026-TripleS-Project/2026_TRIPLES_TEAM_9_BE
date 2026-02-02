@@ -1,4 +1,4 @@
-package com.gdg.backend.api.global.record.domain;
+package com.gdg.backend.api.record.domain;
 
 import com.gdg.backend.api.user.domain.User;
 import jakarta.persistence.CollectionTable;

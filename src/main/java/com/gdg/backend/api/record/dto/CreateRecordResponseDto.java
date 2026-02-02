@@ -1,4 +1,4 @@
-package com.gdg.backend.api.global.record.dto;
+package com.gdg.backend.api.record.dto;
 
 import lombok.Builder;
 import lombok.Getter;
