@@ -33,7 +33,8 @@ public enum SuccessCode {
 
     DELETE(300, HttpStatus.OK, "게시판 삭제가 정상적으로 처리되었습니다."),
     USER_DELETE(301, HttpStatus.OK, "탈퇴 처리가 정상적으로 처리되었습니다."),
-    IMAGE_DELETE(303, HttpStatus.OK,"이미지 삭제가 정상적으로 처리되었습니다.");
+    IMAGE_DELETE(303, HttpStatus.OK,"이미지 삭제가 정상적으로 처리되었습니다."),
+    RECORD_DELETE(304, HttpStatus.OK, "학습 기록 삭제가 정상적으로 처리되었습니다.");
 
     private final int code;
     private final HttpStatus status;

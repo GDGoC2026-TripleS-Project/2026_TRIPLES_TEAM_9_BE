@@ -95,6 +95,13 @@ public class RecordService {
         return UpdateRecordDetailResponseDto.from(record);
     }
 
+    @Transactional
+    public void deleteRecord(Long userId, Long recordId) {
+        Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
+
+        recordRepository.delete(record);
+    }
+
     //keyword 중복인지 확인용
     private List<String> normalizeKeywords(List<String> keywords) {
         return keywords.stream()

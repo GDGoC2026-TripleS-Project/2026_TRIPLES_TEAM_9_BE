@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,5 +74,16 @@ public class RecordController {
         UpdateRecordDetailResponseDto res = recordService.updateRecord(userPrincipal.userId(), recordId, req);
 
         return ApiResponse.success(SuccessCode.RECORD_UPDATE_SUCCESS, res);
+    }
+
+    //성공 시 data는 null 값 반환됨
+    @DeleteMapping("/delete/{recordId}")
+    public ResponseEntity<ApiResponse<Object>> deleteRecord(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long recordId
+    ) {
+        recordService.deleteRecord(userPrincipal.userId(), recordId);
+
+        return ApiResponse.success(SuccessCode.RECORD_DELETE);
     }
 }
