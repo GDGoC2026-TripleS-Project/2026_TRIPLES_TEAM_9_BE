@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class MindMapResponseDto {
-    private final List<MindMapNodeDto> nodes;
-    private final List<MindMapEdgeDto> edges;
+    private List<MindMapNodeDto> nodes;
+    private List<MindMapEdgeDto> edges;
 }
