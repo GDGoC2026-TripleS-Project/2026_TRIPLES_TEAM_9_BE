@@ -58,7 +58,7 @@ public class SwaggerConfig {
     public GroupedOpenApi mindMapApi() {
         return GroupedOpenApi.builder()
                 .group("MindMap API")
-                .pathsToMatch("/mindmaps/**")
+                .pathsToMatch("/mindmap/**")
                 .build();
     }
 
