@@ -36,7 +36,7 @@ public interface MindMapRepository extends JpaRepository<Record, Long> {
 
     @Query(
             value = """
-                    SELECT rk1.keyword_id AS source, rk2.keyword_id AS target, COUNT(*) AS weight
+                    SELECT rk1.keyword_id AS source, rk2.keyword_id AS target, COUNT(DISTINCT r.id) AS weight
                     FROM records r
                     JOIN record_keywords rk1 ON r.id = rk1.record_id
                     JOIN record_keywords rk2 ON r.id = rk2.record_id AND rk1.keyword_id < rk2.keyword_id
@@ -47,7 +47,10 @@ public interface MindMapRepository extends JpaRepository<Record, Long> {
                       AND rk1.keyword_id IN (:keywordIds)
                       AND rk2.keyword_id IN (:keywordIds)
                     GROUP BY rk1.keyword_id, rk2.keyword_id
-                    HAVING COUNT(*) >= :minEdgeWeight
+                    HAVING COUNT(DISTINCT r.id) >= CASE
+                        WHEN :minEdgeWeight < 2 THEN 2
+                        ELSE :minEdgeWeight
+                    END
                     ORDER BY weight DESC
                     """,
             nativeQuery = true
