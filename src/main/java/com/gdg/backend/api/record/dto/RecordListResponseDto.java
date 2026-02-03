@@ -26,7 +26,7 @@ public class RecordListResponseDto {
                 record.getCategory(),
                 record.getTitle(),
                 extractFirstLine(record.getContent()),
-                record.getKeywords()
+                record.getKeywordNames()
         );
     }
 

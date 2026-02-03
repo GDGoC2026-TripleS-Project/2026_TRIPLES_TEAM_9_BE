@@ -1,9 +1,8 @@
 package com.gdg.backend.api.record.domain;
 
+import com.gdg.backend.api.mindMap.domain.Keyword;
 import com.gdg.backend.api.user.domain.User;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +11,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -61,17 +63,17 @@ public class Record {
     private String content;
 
     //학습기록 키워드
-    @ElementCollection
-    @CollectionTable(
+    @ManyToMany
+    @JoinTable(
             name = "record_keywords",
-            joinColumns = @JoinColumn(name = "record_id")
+            joinColumns = @JoinColumn(name = "record_id"),
+            inverseJoinColumns = @JoinColumn(name = "keyword_id")
     )
-    @Column(name = "keyword", nullable = false)
     @Builder.Default
-    private List<String> keywords = new ArrayList<>();
+    private List<Keyword> keywords = new ArrayList<>();
 
     //학습기록 생성
-    public static Record create(User user, LocalDate learningDate, Category category, String title, String content, List<String> keywords) {
+    public static Record create(User user, LocalDate learningDate, Category category, String title, String content, List<Keyword> keywords) {
         return Record.builder()
                 .user(user)
                 .learningDate(learningDate)
@@ -82,12 +84,18 @@ public class Record {
                 .build();
     }
 
-    public void update(LocalDate learningDate, Category category, String title, String content, List<String> keywords) {
+    public void update(LocalDate learningDate, Category category, String title, String content, List<Keyword> keywords) {
         this.learningDate = learningDate;
         this.category = category;
         this.title = title;
         this.content = content;
         this.keywords.clear();
         this.keywords.addAll(keywords);
+    }
+
+    public List<String> getKeywordNames() {
+        return keywords.stream()
+                .map(Keyword::getName)
+                .collect(Collectors.toList());
     }
 }

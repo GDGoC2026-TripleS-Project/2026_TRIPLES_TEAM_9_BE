@@ -28,7 +28,7 @@ public class RecordDetailResponseDto {
                 .category(record.getCategory())
                 .title(record.getTitle())
                 .content(record.getContent())
-                .keywords(record.getKeywords())
+                .keywords(record.getKeywordNames())
                 .build();
     }
 }
