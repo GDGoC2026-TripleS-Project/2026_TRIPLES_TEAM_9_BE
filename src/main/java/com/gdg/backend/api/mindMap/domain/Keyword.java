@@ -7,10 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(
-        name = "keyword",
+        name = "keywords",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "name")
         }
@@ -23,5 +28,8 @@ public class Keyword {
 
     @Column(nullable = false, length = 80)
     private String name;
-}
 
+    public Keyword(String name) {
+        this.name = name;
+    }
+}
