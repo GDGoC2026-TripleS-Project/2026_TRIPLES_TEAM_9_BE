@@ -2,6 +2,8 @@ package com.gdg.backend.api.record.service;
 
 import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
+import com.gdg.backend.api.mindMap.domain.Keyword;
+import com.gdg.backend.api.mindMap.repository.KeywordRepository;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.record.dto.CreateRecordResponseDto;
@@ -29,6 +31,7 @@ public class RecordService {
 
     private final RecordRepository recordRepository;
     private final UserRepository userRepository;
+    private final KeywordRepository keywordRepository;
 
     private static final int PAGE_SIZE = 4;
 
@@ -36,7 +39,7 @@ public class RecordService {
     public CreateRecordResponseDto create(Long userId, CreateRecordRequestDto req) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다."));
 
-        List<String> keywords = normalizeKeywords(req.getKeywords());
+        List<Keyword> keywords = resolveKeywords(normalizeKeywords(req.getKeywords()));
 
         Record record = Record.create(
                 user,
@@ -84,7 +87,7 @@ public class RecordService {
     public UpdateRecordDetailResponseDto updateRecord(Long userId, Long recordId, UpdateRecordDetailRequestDto req) {
         Record record = recordRepository.findByIdAndUserId(recordId, userId).orElseThrow(() -> new RecordNotFoundException("학습 기록을 찾지 못했습니다."));
 
-        List<String> keywords = normalizeKeywords(req.getKeywords());
+        List<Keyword> keywords = resolveKeywords(normalizeKeywords(req.getKeywords()));
 
         record.update(
                 req.getLearningDate(),
@@ -114,6 +117,16 @@ public class RecordService {
                 .filter(s -> !s.isEmpty())
                 .map(String::toLowerCase)
                 .distinct()
+                .toList();
+    }
+
+    private List<Keyword> resolveKeywords(List<String> keywords) {
+        if (keywords.isEmpty()) {
+            return List.of();
+        }
+        return keywords.stream()
+                .map(keyword -> keywordRepository.findByName(keyword)
+                        .orElseGet(() -> keywordRepository.save(new Keyword(keyword))))
                 .toList();
     }
 }
