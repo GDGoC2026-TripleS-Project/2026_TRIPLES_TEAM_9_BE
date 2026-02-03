@@ -27,8 +27,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
@@ -37,6 +37,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.h2database:h2'
+
+    testCompileOnly "org.projectlombok:lombok:1.18.34"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.34"
 }
 
 tasks.named('test') { useJUnitPlatform() }
