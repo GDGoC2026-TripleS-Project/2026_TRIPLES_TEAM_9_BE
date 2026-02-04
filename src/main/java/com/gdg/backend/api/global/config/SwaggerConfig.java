@@ -70,4 +70,12 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi myPageApi(){
+        return GroupedOpenApi.builder()
+                .group("MyPage API")
+                .pathsToMatch("/me/**")
+                .build();
+    }
+
 }
