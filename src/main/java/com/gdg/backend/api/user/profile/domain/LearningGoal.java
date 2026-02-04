@@ -1,4 +1,4 @@
-package com.gdg.backend.api.user.domain;
+package com.gdg.backend.api.user.profile.domain;
 
 public enum LearningGoal {
     JOB,          // 취업

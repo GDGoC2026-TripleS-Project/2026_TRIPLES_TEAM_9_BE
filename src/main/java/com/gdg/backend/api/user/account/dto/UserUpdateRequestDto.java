@@ -1,4 +1,4 @@
-package com.gdg.backend.api.user.dto;
+package com.gdg.backend.api.user.account.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

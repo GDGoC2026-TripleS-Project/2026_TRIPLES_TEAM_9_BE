@@ -1,6 +1,6 @@
-package com.gdg.backend.api.user.repository;
+package com.gdg.backend.api.user.profile.repository;
 
-import com.gdg.backend.api.user.domain.UserLearningField;
+import com.gdg.backend.api.user.profile.domain.UserLearningField;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

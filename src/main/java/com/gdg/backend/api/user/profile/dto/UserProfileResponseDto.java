@@ -1,10 +1,10 @@
-package com.gdg.backend.api.user.dto;
+package com.gdg.backend.api.user.profile.dto;
 
-import com.gdg.backend.api.user.domain.LearningField;
-import com.gdg.backend.api.user.domain.LearningGoal;
+import com.gdg.backend.api.user.profile.domain.LearningField;
+import com.gdg.backend.api.user.profile.domain.LearningGoal;
 import com.gdg.backend.api.user.domain.User;
-import com.gdg.backend.api.user.domain.UserLearningField;
-import com.gdg.backend.api.user.domain.UserProfile;
+import com.gdg.backend.api.user.profile.domain.UserLearningField;
+import com.gdg.backend.api.user.profile.domain.UserProfile;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

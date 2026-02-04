@@ -1,7 +1,7 @@
 package com.gdg.backend.api.auth.dto;
 
-import com.gdg.backend.api.user.domain.LearningField;
-import com.gdg.backend.api.user.domain.LearningGoal;
+import com.gdg.backend.api.user.profile.domain.LearningField;
+import com.gdg.backend.api.user.profile.domain.LearningGoal;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

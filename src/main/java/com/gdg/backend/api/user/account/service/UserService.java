@@ -1,10 +1,10 @@
-package com.gdg.backend.api.user.service;
+package com.gdg.backend.api.user.account.service;
 
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
 import com.gdg.backend.api.user.domain.User;
-import com.gdg.backend.api.user.dto.UserInfoResponseDto;
-import com.gdg.backend.api.user.dto.UserUpdateRequestDto;
-import com.gdg.backend.api.user.repository.UserRepository;
+import com.gdg.backend.api.user.account.dto.UserInfoResponseDto;
+import com.gdg.backend.api.user.account.dto.UserUpdateRequestDto;
+import com.gdg.backend.api.user.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

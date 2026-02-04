@@ -1,15 +1,15 @@
-package com.gdg.backend.api.user.service;
+package com.gdg.backend.api.user.profile.service;
 
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
-import com.gdg.backend.api.user.domain.LearningField;
+import com.gdg.backend.api.user.profile.domain.LearningField;
 import com.gdg.backend.api.user.domain.User;
-import com.gdg.backend.api.user.domain.UserLearningField;
-import com.gdg.backend.api.user.domain.UserProfile;
-import com.gdg.backend.api.user.dto.UserProfileResponseDto;
-import com.gdg.backend.api.user.dto.UserProfileUpdateRequestDto;
-import com.gdg.backend.api.user.repository.UserLearningFieldRepository;
-import com.gdg.backend.api.user.repository.UserProfileRepository;
-import com.gdg.backend.api.user.repository.UserRepository;
+import com.gdg.backend.api.user.profile.domain.UserLearningField;
+import com.gdg.backend.api.user.profile.domain.UserProfile;
+import com.gdg.backend.api.user.profile.dto.UserProfileResponseDto;
+import com.gdg.backend.api.user.profile.dto.UserProfileUpdateRequestDto;
+import com.gdg.backend.api.user.profile.repository.UserLearningFieldRepository;
+import com.gdg.backend.api.user.profile.repository.UserProfileRepository;
+import com.gdg.backend.api.user.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

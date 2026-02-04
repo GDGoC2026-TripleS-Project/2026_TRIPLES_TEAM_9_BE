@@ -1,11 +1,11 @@
-package com.gdg.backend.api.user.controller;
+package com.gdg.backend.api.user.account.controller;
 
 import com.gdg.backend.api.global.code.SuccessCode;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
-import com.gdg.backend.api.user.dto.UserInfoResponseDto;
-import com.gdg.backend.api.user.dto.UserUpdateRequestDto;
-import com.gdg.backend.api.user.service.UserService;
+import com.gdg.backend.api.user.account.dto.UserInfoResponseDto;
+import com.gdg.backend.api.user.account.dto.UserUpdateRequestDto;
+import com.gdg.backend.api.user.account.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

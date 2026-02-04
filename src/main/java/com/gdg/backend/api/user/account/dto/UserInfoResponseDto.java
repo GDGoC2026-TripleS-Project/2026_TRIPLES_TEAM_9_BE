@@ -1,4 +1,4 @@
-package com.gdg.backend.api.user.dto;
+package com.gdg.backend.api.user.account.dto;
 
 import com.gdg.backend.api.user.domain.OauthProvider;
 import com.gdg.backend.api.user.domain.Role;

@@ -10,7 +10,7 @@ import com.gdg.backend.api.global.security.SignupPrincipal;
 import com.gdg.backend.api.user.domain.Role;
 import com.gdg.backend.api.user.domain.User;
 import com.gdg.backend.api.user.domain.UserStatus;
-import com.gdg.backend.api.user.repository.UserRepository;
+import com.gdg.backend.api.user.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

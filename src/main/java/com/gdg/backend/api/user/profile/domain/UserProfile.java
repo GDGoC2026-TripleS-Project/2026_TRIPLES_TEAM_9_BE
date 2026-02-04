@@ -1,4 +1,4 @@
-package com.gdg.backend.api.user.domain;
+package com.gdg.backend.api.user.profile.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

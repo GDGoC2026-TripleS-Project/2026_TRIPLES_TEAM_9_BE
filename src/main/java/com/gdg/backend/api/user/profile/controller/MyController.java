@@ -1,11 +1,11 @@
-package com.gdg.backend.api.user.controller;
+package com.gdg.backend.api.user.profile.controller;
 
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
 import com.gdg.backend.api.global.code.SuccessCode;
-import com.gdg.backend.api.user.dto.UserProfileResponseDto;
-import com.gdg.backend.api.user.dto.UserProfileUpdateRequestDto;
-import com.gdg.backend.api.user.service.UserProfileService;
+import com.gdg.backend.api.user.profile.dto.UserProfileResponseDto;
+import com.gdg.backend.api.user.profile.dto.UserProfileUpdateRequestDto;
+import com.gdg.backend.api.user.profile.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/my")
+@RequestMapping("/me")
 public class MyController {
 
     private final UserProfileService userProfileService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<UserProfileResponseDto>> getMe(
+    public ResponseEntity<ApiResponse<UserProfileResponseDto>> getMyProfile(
             @AuthenticationPrincipal UserPrincipal principal
     ) {
         UserProfileResponseDto response = userProfileService.getMyProfile(principal.userId());
