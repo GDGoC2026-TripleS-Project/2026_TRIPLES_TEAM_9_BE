@@ -1,5 +1,6 @@
 package com.gdg.backend.api.user.profile.domain;
 
+import com.gdg.backend.api.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
