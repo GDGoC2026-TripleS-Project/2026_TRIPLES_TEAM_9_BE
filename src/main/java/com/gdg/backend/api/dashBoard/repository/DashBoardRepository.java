@@ -1,6 +1,6 @@
 package com.gdg.backend.api.dashBoard.repository;
 
-import com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStatDto;
+import com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStateDto;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.domain.Record;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +69,7 @@ public interface DashBoardRepository extends JpaRepository<Record, Long> {
             group by r.category
             order by count(r) desc
             """)
-    List<DashBoardCategoryStatDto> categoryStats(
+    List<DashBoardCategoryStateDto> categoryStats(
             @Param("userId") Long userId,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to,

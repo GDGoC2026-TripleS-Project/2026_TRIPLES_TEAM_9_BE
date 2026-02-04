@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DashBoardCategoryStatDto {
+public class DashBoardCategoryStateDto {
     private Category category;
     private long count;
 }

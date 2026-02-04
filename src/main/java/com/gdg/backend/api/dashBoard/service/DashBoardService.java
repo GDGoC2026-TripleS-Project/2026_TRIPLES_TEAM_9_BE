@@ -1,6 +1,6 @@
 package com.gdg.backend.api.dashBoard.service;
 
-import com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStatDto;
+import com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStateDto;
 import com.gdg.backend.api.dashBoard.dto.DashBoardRecentActivityDto;
 import com.gdg.backend.api.dashBoard.dto.DashBoardRequestDto;
 import com.gdg.backend.api.dashBoard.dto.DashBoardResponseDto;
@@ -33,7 +33,7 @@ public class DashBoardService {
         long totalKeywords = dashBoardRepository.countDistinctKeywords(userId, from, to, category);
         long totalCategories = dashBoardRepository.countDistinctCategories(userId, from, to, category);
 
-        List<DashBoardCategoryStatDto> categoryStats =
+        List<DashBoardCategoryStateDto> categoryStats =
                 dashBoardRepository.categoryStats(userId, from, to, category);
 
         List<Record> recentRecords = dashBoardRepository.findRecentWithKeywords(

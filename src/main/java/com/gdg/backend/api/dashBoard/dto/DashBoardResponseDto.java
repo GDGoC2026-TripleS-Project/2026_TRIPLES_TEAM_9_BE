@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class DashBoardResponseDto {
     private DashBoardSummaryDto summary;
-    private List<DashBoardCategoryStatDto> categoryStats;
+    private List<DashBoardCategoryStateDto> categoryStats;
     private List<DashBoardRecentActivityDto> recentActivities;
 }
