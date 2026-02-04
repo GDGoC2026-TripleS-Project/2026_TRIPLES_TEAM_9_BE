@@ -62,4 +62,12 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi dashboardApi(){
+        return GroupedOpenApi.builder()
+                .group("Dashboard API")
+                .pathsToMatch("/dashboard/**")
+                .build();
+    }
+
 }
