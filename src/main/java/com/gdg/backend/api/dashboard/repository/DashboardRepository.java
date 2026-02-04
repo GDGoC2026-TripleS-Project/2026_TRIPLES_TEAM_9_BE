@@ -1,7 +1,7 @@
 package com.gdg.backend.api.dashboard.repository;
 
 import com.gdg.backend.api.dashboard.dto.DashboardCategoryStatDto;
-import com.gdg.backend.api.dashboard.dto.DashboardMonthCountResponseDto;
+import com.gdg.backend.api.dashboard.dto.DashboardMonthCountRawDto;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.domain.Record;
 import org.springframework.data.domain.Pageable;
@@ -96,18 +96,19 @@ public interface DashboardRepository extends JpaRepository<Record, Long> {
     );
 
     @Query("""
-        select new com.gdg.backend.api.dashboard.dto.DashboardMonthCountResponseDto(
-            FUNCTION('DATE_FORMAT', r.learningDate, '%Y.%m'),
+        select new com.gdg.backend.api.dashboard.dto.DashboardMonthCountRawDto(
+            year(r.learningDate),
+            month(r.learningDate),
             count(r)
         )
         from Record r
         where r.user.id = :userId
           and (:from is null or r.learningDate >= :from)
           and (:to is null or r.learningDate <= :to)
-        group by FUNCTION('DATE_FORMAT', r.learningDate, '%Y.%m')
-        order by FUNCTION('DATE_FORMAT', r.learningDate, '%Y.%m')
+        group by year(r.learningDate), month(r.learningDate)
+        order by year(r.learningDate), month(r.learningDate)
     """)
-    List<DashboardMonthCountResponseDto> findMonthlyCounts(
+    List<DashboardMonthCountRawDto> findMonthlyCounts(
             @Param("userId") Long userId,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to
