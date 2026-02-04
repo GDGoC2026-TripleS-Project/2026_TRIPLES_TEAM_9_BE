@@ -1,4 +1,4 @@
-package com.gdg.backend.api.dashBoard.dto;
+package com.gdg.backend.api.dashboard.dto;
 
 import com.gdg.backend.api.record.domain.Category;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class DashBoardRequestDto {
+public class DashboardRequestDto {
     private static final int DEFAULT_RECENT_LIMIT = 5;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

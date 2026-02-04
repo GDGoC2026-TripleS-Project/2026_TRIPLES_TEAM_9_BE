@@ -1,6 +1,6 @@
-package com.gdg.backend.api.dashBoard.repository;
+package com.gdg.backend.api.dashboard.repository;
 
-import com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStateDto;
+import com.gdg.backend.api.dashboard.dto.DashboardCategoryStatDto;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.domain.Record;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface DashBoardRepository extends JpaRepository<Record, Long> {
+public interface DashboardRepository extends JpaRepository<Record, Long> {
 
     @Query("""
             select count(r)
@@ -60,7 +60,7 @@ public interface DashBoardRepository extends JpaRepository<Record, Long> {
     );
 
     @Query("""
-            select new com.gdg.backend.api.dashBoard.dto.DashBoardCategoryStatDto(r.category, count(r))
+            select new com.gdg.backend.api.dashboard.dto.DashboardCategoryStatDto(r.category, count(r))
             from Record r
             where r.user.id = :userId
               and (:from is null or r.learningDate >= :from)
@@ -69,7 +69,7 @@ public interface DashBoardRepository extends JpaRepository<Record, Long> {
             group by r.category
             order by count(r) desc
             """)
-    List<DashBoardCategoryStateDto> categoryStats(
+    List<DashboardCategoryStatDto> categoryStats(
             @Param("userId") Long userId,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to,

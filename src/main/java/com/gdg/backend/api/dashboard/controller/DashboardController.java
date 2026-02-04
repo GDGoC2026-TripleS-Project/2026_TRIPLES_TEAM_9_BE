@@ -1,8 +1,8 @@
-package com.gdg.backend.api.dashBoard.controller;
+package com.gdg.backend.api.dashboard.controller;
 
-import com.gdg.backend.api.dashBoard.dto.DashBoardRequestDto;
-import com.gdg.backend.api.dashBoard.dto.DashBoardResponseDto;
-import com.gdg.backend.api.dashBoard.service.DashBoardService;
+import com.gdg.backend.api.dashboard.dto.DashboardRequestDto;
+import com.gdg.backend.api.dashboard.dto.DashboardResponseDto;
+import com.gdg.backend.api.dashboard.service.DashboardService;
 import com.gdg.backend.api.global.code.SuccessCode;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
@@ -17,17 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/dashboard")
-public class DashBoardController {
+public class DashboardController {
 
-    private final DashBoardService dashBoardService;
+    private final DashboardService dashboardService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<DashBoardResponseDto>> getDashBoard(
+    public ResponseEntity<ApiResponse<DashboardResponseDto>> getDashboard(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @ModelAttribute DashBoardRequestDto req
+            @ModelAttribute DashboardRequestDto req
     ) {
         Long userId = userPrincipal.userId();
-        DashBoardResponseDto res = dashBoardService.getDashBoard(userId, req);
+        DashboardResponseDto res = dashboardService.getDashboard(userId, req);
 
         return ApiResponse.success(SuccessCode.READ_SUCCESS, res);
     }

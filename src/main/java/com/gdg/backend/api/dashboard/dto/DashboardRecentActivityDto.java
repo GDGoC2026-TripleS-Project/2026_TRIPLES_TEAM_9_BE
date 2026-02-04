@@ -1,4 +1,4 @@
-package com.gdg.backend.api.dashBoard.dto;
+package com.gdg.backend.api.dashboard.dto;
 
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.domain.Record;
@@ -10,15 +10,15 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class DashBoardRecentActivityDto {
+public class DashboardRecentActivityDto {
     private Long recordId;
     private LocalDate learningDate;
     private Category category;
     private String title;
     private List<String> keywords;
 
-    public static DashBoardRecentActivityDto from(Record record) {
-        return new DashBoardRecentActivityDto(
+    public static DashboardRecentActivityDto from(Record record) {
+        return new DashboardRecentActivityDto(
                 record.getId(),
                 record.getLearningDate(),
                 record.getCategory(),
