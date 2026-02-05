@@ -96,7 +96,6 @@ public class MindmapSummaryService {
             ));
         }
 
-        // Verification: enable hibernate show_sql and confirm 3 queries (keywords, records, tags)
         return new MindmapSummaryResponseDto(keywords, selected, records);
     }
 
