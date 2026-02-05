@@ -26,7 +26,7 @@ public class UserProfile {
     private Long userId;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -42,10 +42,12 @@ public class UserProfile {
 
     protected UserProfile(User user) {
         this.user = user;
-        this.userId = user.getId();
     }
 
-    public static UserProfile of(User user) {
+    public static UserProfile create(User user) {
+        if (user == null || user.getId() == null) {
+            throw new IllegalStateException("요구사항에 충족하지 않습니다.");
+        }
         return new UserProfile(user);
     }
 
@@ -55,4 +57,3 @@ public class UserProfile {
         this.resolution = resolution;
     }
 }
-

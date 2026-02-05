@@ -11,11 +11,13 @@ import com.gdg.backend.api.user.profile.repository.UserLearningFieldRepository;
 import com.gdg.backend.api.user.profile.repository.UserProfileRepository;
 import com.gdg.backend.api.user.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserProfileService {
 
     private final UserRepository userRepository;
@@ -41,7 +43,13 @@ public class UserProfileService {
                 .orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다."));
 
         UserProfile profile = userProfileRepository.findById(userId)
-                .orElse(UserProfile.of(user));
+                .orElse(UserProfile.create(user));
+
+        log.info("[profile-update] userIdParam={}, user.getId={}, profile.userId={}, profile.user={}",
+                userId,
+                user.getId(),
+                profile.getUserId(),
+                profile.getUser() == null ? null : profile.getUser().getId());
 
         user.updateNickname(request.getNickname());
         profile.update(
