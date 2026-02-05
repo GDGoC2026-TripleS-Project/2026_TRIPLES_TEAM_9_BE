@@ -1,6 +1,6 @@
 package com.gdg.backend.api.mindMap.repository;
 
-import com.gdg.backend.api.mindMap.domain.Keyword;
+import com.gdg.backend.api.record.domain.Keyword;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
