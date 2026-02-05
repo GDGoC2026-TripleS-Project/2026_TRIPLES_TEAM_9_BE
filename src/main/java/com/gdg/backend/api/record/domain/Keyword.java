@@ -1,4 +1,4 @@
-package com.gdg.backend.api.mindMap.domain;
+package com.gdg.backend.api.record.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
