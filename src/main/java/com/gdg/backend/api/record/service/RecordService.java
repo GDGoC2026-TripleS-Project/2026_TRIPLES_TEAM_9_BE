@@ -2,7 +2,7 @@ package com.gdg.backend.api.record.service;
 
 import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
-import com.gdg.backend.api.mindMap.domain.Keyword;
+import com.gdg.backend.api.record.domain.Keyword;
 import com.gdg.backend.api.mindMap.repository.KeywordRepository;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
@@ -14,7 +14,7 @@ import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
 import com.gdg.backend.api.record.repository.RecordRepository;
 import com.gdg.backend.api.record.domain.Record;
 import com.gdg.backend.api.user.domain.User;
-import com.gdg.backend.api.user.repository.UserRepository;
+import com.gdg.backend.api.user.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,5 +1,6 @@
 package com.gdg.backend.api.global.exception;
 
+import com.gdg.backend.api.auth.exception.AuthException;
 import com.gdg.backend.api.global.code.ErrorCode;
 import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserAlreadyExistsException;
@@ -20,6 +21,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleUserNotFound(UserNotFoundException e) {
         log.warn("UserNotFoundException", e);
         return ApiResponse.error(ErrorCode.USER_NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthException(AuthException e) {
+        return ApiResponse.error(
+                e.getErrorCode().getStatus().value(),
+                e.getErrorCode().getMessage(),
+                e.getErrorCode().getCode()
+        );
     }
 
     @ExceptionHandler(Exception.class)

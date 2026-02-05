@@ -1,6 +1,8 @@
 package com.gdg.backend.api.dashboard.service;
 
 import com.gdg.backend.api.dashboard.dto.DashboardCategoryStatDto;
+import com.gdg.backend.api.dashboard.dto.DashboardMonthCountRawDto;
+import com.gdg.backend.api.dashboard.dto.DashboardMonthCountResponseDto;
 import com.gdg.backend.api.dashboard.dto.DashboardRecentActivityDto;
 import com.gdg.backend.api.dashboard.dto.DashboardRequestDto;
 import com.gdg.backend.api.dashboard.dto.DashboardResponseDto;
@@ -54,6 +56,16 @@ public class DashboardService {
                 .totalCategories(totalCategories)
                 .build();
 
-        return new DashboardResponseDto(summaryDto, categoryStats, recentActivities);
+        return DashboardResponseDto.from(summaryDto, categoryStats, recentActivities);
+    }
+
+    public List<DashboardMonthCountResponseDto> getMonthlyStats(Long userId, LocalDate from, LocalDate to) {
+        List<DashboardMonthCountRawDto> raw = dashboardRepository.findMonthlyCounts(userId, from, to);
+        return raw.stream()
+                .map(item -> new DashboardMonthCountResponseDto(
+                        String.format("%d.%02d", item.year(), item.month()),
+                        item.count()
+                ))
+                .toList();
     }
 }

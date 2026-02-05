@@ -1,30 +1,26 @@
-package com.gdg.backend.api.auth.dto;
+package com.gdg.backend.api.user.profile.dto;
 
 import com.gdg.backend.api.user.profile.domain.LearningField;
 import com.gdg.backend.api.user.profile.domain.LearningGoal;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class AuthOnboardingRequestDto {
+@AllArgsConstructor
+public class UserProfileUpdateRequestDto {
     @NotBlank
-    private String authToken;
-
-    @NotBlank
+    @Size(min = 2, max = 20)
     private String nickname;
 
-    @NotNull
     private LearningGoal learningGoal;
-
-    @Size(max = 100)
-    private String learningGoalText;
 
     private List<LearningField> learningFields;
 
-    @Size(max = 200)
+    private String learningGoalText;
+
     private String resolution;
 }

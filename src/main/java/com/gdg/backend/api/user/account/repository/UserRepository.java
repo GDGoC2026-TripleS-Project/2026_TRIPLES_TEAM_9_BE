@@ -1,4 +1,4 @@
-package com.gdg.backend.api.user.repository;
+package com.gdg.backend.api.user.account.repository;
 
 import com.gdg.backend.api.user.domain.OauthProvider;
 import com.gdg.backend.api.user.domain.User;

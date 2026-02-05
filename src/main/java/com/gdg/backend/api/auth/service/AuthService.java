@@ -1,16 +1,19 @@
 package com.gdg.backend.api.auth.service;
 
-import com.gdg.backend.api.auth.config.SuperAdminProperties;
 import com.gdg.backend.api.auth.dto.AuthIssueResult;
 import com.gdg.backend.api.auth.dto.AuthLoginRequestDto;
 import com.gdg.backend.api.auth.dto.AuthOnboardingRequestDto;
 import com.gdg.backend.api.auth.dto.IssuedTokens;
+import com.gdg.backend.api.auth.exception.AuthErrorCode;
+import com.gdg.backend.api.auth.exception.AuthException;
+import com.gdg.backend.api.auth.nickname.NicknameGenerator;
+import com.gdg.backend.api.auth.policy.SuperAdminPolicy;
 import com.gdg.backend.api.global.jwt.TokenProvider;
 import com.gdg.backend.api.global.security.SignupPrincipal;
+import com.gdg.backend.api.user.account.repository.UserRepository;
 import com.gdg.backend.api.user.domain.Role;
 import com.gdg.backend.api.user.domain.User;
 import com.gdg.backend.api.user.domain.UserStatus;
-import com.gdg.backend.api.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +24,9 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final SuperAdminProperties superAdminProperties;
+    private final SuperAdminPolicy superAdminPolicy;
+    private final NicknameGenerator nicknameGenerator;
+    private final OnboardingService onboardingService;
 
     /**
      * 로그인 (기존 회원 or 신규 가입)
@@ -34,7 +39,7 @@ public class AuthService {
                 .findByOauthProviderAndProviderId(principal.oauthProvider(), principal.providerId())
                 .orElseGet(() -> signup(principal));
 
-        if (user.getRole() != Role.SUPER_ADMIN && isSuperAdmin(principal)) {
+        if (user.getRole() != Role.SUPER_ADMIN && superAdminPolicy.isSuperAdmin(principal)) {
             user.updateRole(Role.SUPER_ADMIN);
         }
 
@@ -51,7 +56,7 @@ public class AuthService {
 
         User user = findPendingUser(principal);
 
-        applyOnboardingInfo(user, request);
+        onboardingService.apply(user, request);
         activateUser(user);
 
         IssuedTokens tokens = issueTokens(user);
@@ -64,16 +69,16 @@ public class AuthService {
     @Transactional
     public AuthIssueResult refresh(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new IllegalStateException("Refresh token이 없습니다.");
+            throw new AuthException(AuthErrorCode.NO_REFRESH_TOKEN);
         }
 
         Long userId = tokenProvider.getSubjectAsUserId(refreshToken);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND));
 
         if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
-            throw new IllegalStateException("Refresh token이 유효하지 않습니다.");
+            throw new AuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         IssuedTokens newTokens = issueTokens(user);
@@ -104,7 +109,7 @@ public class AuthService {
     private User signup(SignupPrincipal principal) {
         Role role = Role.USER;
 
-        if (isSuperAdmin(principal)) {
+        if (superAdminPolicy.isSuperAdmin(principal)) {
             role = Role.SUPER_ADMIN;
         }
 
@@ -112,7 +117,7 @@ public class AuthService {
                 .oauthProvider(principal.oauthProvider())
                 .providerId(principal.providerId())
                 .email(principal.email())
-                .nickname(generateTempNickname(principal))
+                .nickname(nicknameGenerator.generate(principal))
                 .role(role)
                 .userStatus(UserStatus.PENDING)
                 .build();
@@ -120,46 +125,23 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    private boolean isSuperAdmin(SignupPrincipal principal) {
-        if (superAdminProperties == null) return false;
-
-        if (superAdminProperties.getOauthProvider() == null) return false;
-        if (superAdminProperties.getProviderId() == null || superAdminProperties.getProviderId().isBlank()) return false;
-        if (superAdminProperties.getEmail() == null || superAdminProperties.getEmail().isBlank()) return false;
-
-        return principal.oauthProvider() == superAdminProperties.getOauthProvider()
-                && principal.providerId().equals(superAdminProperties.getProviderId())
-                && principal.email().equalsIgnoreCase(superAdminProperties.getEmail());
-    }
-
     private User findPendingUser(SignupPrincipal principal) {
         User user = userRepository
                 .findByOauthProviderAndProviderId(principal.oauthProvider(), principal.providerId())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND_FOR_ONBOARDING));
 
         if (user.getUserStatus() != UserStatus.PENDING) {
-            throw new IllegalStateException("회원가입 대상 사용자가 아닙니다.");
+            throw new AuthException(AuthErrorCode.NOT_PENDING_USER);
         }
 
         if (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(principal.email())) {
-            throw new IllegalStateException("토큰 정보와 사용자 정보가 일치하지 않습니다.");
+            throw new AuthException(AuthErrorCode.TOKEN_USER_MISMATCH);
         }
 
         return user;
     }
 
-    private void applyOnboardingInfo(User user, AuthOnboardingRequestDto request) {
-        user.updateNickname(request.getNickname());
-    }
-
     private void activateUser(User user) {
         user.updateUserStatus(UserStatus.ACTIVE);
-    }
-
-    private String generateTempNickname(SignupPrincipal principal) {
-        return "user_" +
-                principal.oauthProvider().name().toLowerCase() +
-                "_" +
-                principal.providerId();
     }
 }
