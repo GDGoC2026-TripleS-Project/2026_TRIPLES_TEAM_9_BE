@@ -5,6 +5,7 @@ import com.gdg.backend.api.record.domain.Record;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,6 +19,10 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     Page<Record> findByUserIdAndCategory(Long userId, Category category, Pageable pageable);
 
     Optional<Record> findByIdAndUserId(Long recordId, Long userId);
+
+    @Modifying
+    @Query("delete from Record r where r.user.id = :userId")
+    void deleteAllByUserId(@Param("userId") Long userId);
 
     @Query("""
             SELECT r 

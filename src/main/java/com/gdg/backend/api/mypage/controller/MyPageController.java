@@ -158,7 +158,7 @@ public class MyPageController {
                     - 탈퇴 후에는 회원가입을 다시 해야합니다.
                     """
     )
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse<Object>> deleteUser(
             @AuthenticationPrincipal UserPrincipal principal
     ) {

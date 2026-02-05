@@ -5,6 +5,9 @@ import com.gdg.backend.api.user.domain.User;
 import com.gdg.backend.api.user.account.dto.UserInfoResponseDto;
 import com.gdg.backend.api.user.account.dto.UserUpdateRequestDto;
 import com.gdg.backend.api.user.account.repository.UserRepository;
+import com.gdg.backend.api.user.profile.repository.UserLearningFieldRepository;
+import com.gdg.backend.api.user.profile.repository.UserProfileRepository;
+import com.gdg.backend.api.record.repository.RecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
+    private final UserLearningFieldRepository userLearningFieldRepository;
+    private final RecordRepository recordRepository;
     @Transactional(readOnly = true)
     public UserInfoResponseDto getMyInfo(Long userId){
         User user = getUser(userId);
@@ -37,6 +43,9 @@ public class UserService {
     public void deleteUser(Long userId){
         User user = getUser(userId);
 
+        recordRepository.deleteAllByUserId(userId);
+        userLearningFieldRepository.deleteAllByUserId(userId);
+        userProfileRepository.deleteByUserId(userId);
         userRepository.delete(user);
     }
 
