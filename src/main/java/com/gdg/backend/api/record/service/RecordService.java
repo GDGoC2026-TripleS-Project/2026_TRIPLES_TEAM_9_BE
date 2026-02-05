@@ -2,7 +2,7 @@ package com.gdg.backend.api.record.service;
 
 import com.gdg.backend.api.global.exception.custom.RecordNotFoundException;
 import com.gdg.backend.api.global.exception.custom.UserNotFoundException;
-import com.gdg.backend.api.mindMap.domain.Keyword;
+import com.gdg.backend.api.record.domain.Keyword;
 import com.gdg.backend.api.mindMap.repository.KeywordRepository;
 import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
