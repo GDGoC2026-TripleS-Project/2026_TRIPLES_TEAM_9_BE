@@ -53,7 +53,7 @@ public class MindmapSummaryService {
                 }
             }
         }
-        // 선택된 키워드가 없거나 다른 사용자 키워드일 경우 top1로 fallback (쿼리 수 제한)
+
         if (selected == null) {
             selected = keywordCounts.get(0);
         }
