@@ -74,7 +74,7 @@ public class SwaggerConfig {
     public GroupedOpenApi myPageApi(){
         return GroupedOpenApi.builder()
                 .group("MyPage API")
-                .pathsToMatch("/me/**")
+                .pathsToMatch("/mypage/**")
                 .build();
     }
 
