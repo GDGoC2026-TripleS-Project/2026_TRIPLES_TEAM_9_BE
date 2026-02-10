@@ -15,6 +15,8 @@ public enum SuccessCode {
     PROCESS_SUCCESS(4, HttpStatus.OK, "정상적으로 처리되었습니다."),
     RECORD_LIST_SUCCESS(5,HttpStatus.OK, "학습 기록 조회가 완료되었습니다."),
     RECORD_DETAILS_SUCCESS(6, HttpStatus.OK, "학습 기록 세부 정보 조회가 완료되었습니다."),
+    GOAL_LIST_SUCCESS(7, HttpStatus.OK, "목표 조회가 완료되었습니다."),
+    TASK_LIST_SUCCESS(8, HttpStatus.OK, "과제 조회가 완료되었습니다."),
 
     //201
     CREATED(100, HttpStatus.CREATED, "게시판 작성 요청이 정상적으로 처리되었습니다."),
@@ -22,19 +24,24 @@ public enum SuccessCode {
     ADMIN_CREATED(103, HttpStatus.CREATED, "관리자 계정이 생성되었습니다."),
     TOKEN_REFRESH_SUCCESS(104, HttpStatus.OK, "RefreshToken이 정상적으로 생성되었습니다."),
     RECORD_CREATED(105, HttpStatus.CREATED, "학습기록이 정상적으로 생성되었습니다."),
+    GOAL_CREATED(106, HttpStatus.CREATED, "목표가 정상적으로 생성되었습니다."),
+    TASK_CREATED(107, HttpStatus.CREATED, "과제가 정상적으로 생성되었습니다."),
 
     //202
     UPDATE(200, HttpStatus.OK, "게시판 수정이 정상적으로 처리되었습니다."),
     USER_UPDATE(201, HttpStatus.OK, "사용자 수정이 정상적으로 처리되었습니다."),
     IMAGE_UPDATE(203, HttpStatus.OK, "이미지 변경이 정상적으로 처리되었습니다."),
     RECORD_UPDATE(204, HttpStatus.OK, "학습 기록 세부 정보 수정이 정상적으로 처리되었습니다."),
+    TASK_CHECKBOX_UPDATE(205, HttpStatus.OK, "과제 완료 여부 수정이 정상적으로 처리되었습니다."),
 
     //203
 
     DELETE(300, HttpStatus.OK, "게시판 삭제가 정상적으로 처리되었습니다."),
     USER_DELETE(301, HttpStatus.OK, "탈퇴 처리가 정상적으로 처리되었습니다."),
     IMAGE_DELETE(303, HttpStatus.OK,"이미지 삭제가 정상적으로 처리되었습니다."),
-    RECORD_DELETE(304, HttpStatus.OK, "학습 기록 삭제가 정상적으로 처리되었습니다.");
+    RECORD_DELETE(304, HttpStatus.OK, "학습 기록 삭제가 정상적으로 처리되었습니다."),
+    GOAL_DELETE(305, HttpStatus.OK, "목표 삭제가 정상적으로 처리되었습니다."),
+    TASK_DELETE(306, HttpStatus.OK, "과제 삭제가 정상적으로 처리되었습니다.");
 
     private final int code;
     private final HttpStatus status;

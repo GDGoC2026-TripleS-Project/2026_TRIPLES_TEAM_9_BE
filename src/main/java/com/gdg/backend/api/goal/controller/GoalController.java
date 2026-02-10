@@ -1,0 +1,108 @@
+package com.gdg.backend.api.goal.controller;
+
+import com.gdg.backend.api.global.code.SuccessCode;
+import com.gdg.backend.api.global.response.ApiResponse;
+import com.gdg.backend.api.global.security.UserPrincipal;
+import com.gdg.backend.api.goal.dto.CreateGoalRequestDto;
+import com.gdg.backend.api.goal.dto.CreateGoalResponseDto;
+import com.gdg.backend.api.goal.dto.CreateTaskRequestDto;
+import com.gdg.backend.api.goal.dto.CreateTaskResponseDto;
+import com.gdg.backend.api.goal.dto.GoalListResponseDto;
+import com.gdg.backend.api.goal.dto.TaskResponseDto;
+import com.gdg.backend.api.goal.service.GoalService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/goals")
+public class GoalController {
+
+    private final GoalService goalService;
+
+    //목표
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<CreateGoalResponseDto>> createGoal(
+            @Valid @RequestBody CreateGoalRequestDto req,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
+    ) {
+        CreateGoalResponseDto res = goalService.createGoal(userPrincipal.userId(), req);
+
+        return ApiResponse.success(SuccessCode.GOAL_CREATED, res);
+    }
+
+    @GetMapping("/lists")
+    public ResponseEntity<ApiResponse<Page<GoalListResponseDto>>> getGoals(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestParam(defaultValue = "0") @Min(0) int page
+    ){
+        return ApiResponse.success(SuccessCode.GOAL_LIST_SUCCESS,goalService.getGoals(userPrincipal.userId(), page));
+    }
+
+    @DeleteMapping("/delete/{goalId}")
+    public ResponseEntity<ApiResponse<Object>> deleteGoal(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long goalId
+    ) {
+        goalService.deleteGoal(userPrincipal.userId(), goalId);
+
+        return ApiResponse.success(SuccessCode.GOAL_DELETE);
+    }
+
+    //과제
+    @PostMapping("/create/{goalId}/task")
+    public ResponseEntity<ApiResponse<CreateTaskResponseDto>> createTask(
+            @Valid @RequestBody CreateTaskRequestDto req,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long goalId
+    ) {
+        CreateTaskResponseDto res = goalService.createTask(userPrincipal.userId(), goalId, req);
+
+        return ApiResponse.success(SuccessCode.TASK_CREATED, res);
+    }
+
+    @GetMapping("/lists/{goalId}/task")
+    public ResponseEntity<ApiResponse<List<TaskResponseDto>>> getTasks(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long goalId
+    ) {
+        return ApiResponse.success(SuccessCode.TASK_LIST_SUCCESS, goalService.getTasks(userPrincipal.userId(), goalId));
+    }
+
+    @PatchMapping("/{goalId}/task/{taskId}/checkbox")
+    public ResponseEntity<ApiResponse<Object>> checkTask(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long goalId,
+            @PathVariable Long taskId
+    ) {
+        goalService.checkTask(userPrincipal.userId(), goalId, taskId);
+
+        return ApiResponse.success(SuccessCode.TASK_CHECKBOX_UPDATE);
+    }
+
+    @DeleteMapping("/delete/{goalId}/task/{taskId}")
+    public ResponseEntity<ApiResponse<Object>> deleteTask(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @PathVariable Long goalId,
+            @PathVariable Long taskId
+    ) {
+        goalService.deleteTask(userPrincipal.userId(), goalId, taskId);
+
+        return ApiResponse.success(SuccessCode.TASK_DELETE);
+    }
+}
