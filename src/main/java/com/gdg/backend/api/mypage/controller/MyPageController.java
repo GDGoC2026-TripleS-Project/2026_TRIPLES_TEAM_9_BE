@@ -3,14 +3,17 @@ package com.gdg.backend.api.mypage.controller;
 import com.gdg.backend.api.global.code.SuccessCode;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
+import com.gdg.backend.api.mypage.dto.MindmapSummaryResponseDto;
 import com.gdg.backend.api.mypage.dto.RecentActivityDto;
 import com.gdg.backend.api.mypage.service.MyPageActivityService;
+import com.gdg.backend.api.mypage.service.MindmapSummaryService;
 import com.gdg.backend.api.user.account.dto.UserInfoResponseDto;
 import com.gdg.backend.api.user.account.dto.UserUpdateRequestDto;
 import com.gdg.backend.api.user.account.service.UserService;
 import com.gdg.backend.api.user.profile.dto.UserProfileResponseDto;
 import com.gdg.backend.api.user.profile.dto.UserProfileUpdateRequestDto;
 import com.gdg.backend.api.user.profile.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,6 +37,7 @@ import java.util.List;
 public class MyPageController {
 
     private final MyPageActivityService myPageActivityService;
+    private final MindmapSummaryService mindmapSummaryService;
     private final UserProfileService userProfileService;
     private final UserService userService;
 
@@ -104,6 +108,32 @@ public class MyPageController {
         return ApiResponse.success(
                 SuccessCode.READ_SUCCESS,
                 myPageActivityService.getRecentActivities(principal.userId(), size)
+        );
+    }
+
+    @Operation(
+            summary = "마이페이지 - 마인드맵 요약",
+            description = """
+                    마인드맵 요약 화면을 위한 키워드/기록 요약 정보를 조회합니다.
+                    
+                    - keywords: 상위 키워드 목록
+                    - selected: 선택된 키워드 요약
+                    - records: 선택 키워드에 매칭된 최근 기록
+                    """
+    )
+    @GetMapping("/mindmap/summary")
+    public ResponseEntity<ApiResponse<MindmapSummaryResponseDto>> mindmapSummary(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Parameter(description = "왼쪽 키워드 목록 상위 N개 (default=5, max=20)")
+            @RequestParam(required = false) Integer top,
+            @Parameter(description = "선택된 키워드 ID (없으면 top 1)")
+            @RequestParam(required = false) Long keywordId,
+            @Parameter(description = "선택된 키워드에 매칭되는 최근 기록 N개 (default=10, max=50)")
+            @RequestParam(required = false) Integer size
+    ) {
+        return ApiResponse.success(
+                SuccessCode.READ_SUCCESS,
+                mindmapSummaryService.getSummary(principal.userId(), top, keywordId, size)
         );
     }
 

@@ -1,0 +1,53 @@
+name: Deploy (main) Blue/Red
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build (Gradle)
+        run: ./gradlew clean build -x test
+
+      - name: Build Docker image
+        run: |
+          docker build -t garden:${{ github.sha }} .
+
+      - name: Save image as tar.gz
+        run: |
+          docker save garden:${{ github.sha }} | gzip > garden-${{ github.sha }}.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "garden-${{ github.sha }}.tar.gz"
+          target: "/tmp"
+
+      - name: Load image & Deploy (Blue/Red)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            gunzip -c /tmp/garden-${{ github.sha }}.tar.gz | docker load
+            /usr/local/bin/garden-deploy-prod-local garden:${{ github.sha }} "${{ secrets.HEALTH_PATH }}"

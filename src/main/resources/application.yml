@@ -78,8 +78,8 @@ frontend:
 
 admin:
   super:
-    email: whkang03@gmail.com
-    provider-id: 4702854778
+    email: ${KAKAO_EMAIL}
+    provider-id: ${KAKAO_PROVIDER_ID}
     oauth-provider: KAKAO
 
 
