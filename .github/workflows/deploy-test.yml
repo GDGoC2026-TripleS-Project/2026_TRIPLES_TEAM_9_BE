@@ -1,4 +1,4 @@
-name: CI (feat)
+name: Deploy CI (feat)
 
 on:
   push:
