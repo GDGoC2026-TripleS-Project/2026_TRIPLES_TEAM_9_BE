@@ -10,6 +10,7 @@ import com.gdg.backend.api.goal.dto.CreateTaskResponseDto;
 import com.gdg.backend.api.goal.dto.GoalListResponseDto;
 import com.gdg.backend.api.goal.dto.TaskResponseDto;
 import com.gdg.backend.api.goal.service.GoalService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goals")
+@Tag(name = "목표 관리 컨틀롤러 입니다.")
 public class GoalController {
 
     private final GoalService goalService;
