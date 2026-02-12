@@ -79,10 +79,10 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi gole(){
+    public GroupedOpenApi goals(){
         return GroupedOpenApi.builder()
-                .group("gole API")
-                .pathsToMatch("/goles/**")
+                .group("goals API")
+                .pathsToMatch("/goals/**")
                 .build();
     }
 
