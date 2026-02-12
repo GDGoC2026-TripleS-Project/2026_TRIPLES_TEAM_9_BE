@@ -1,4 +1,4 @@
-name: CI (feat)
+name: Deploy (test) feat -> 8081
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "feat/**"
 
 jobs:
-  build:
+  deploy_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,3 +24,32 @@ jobs:
 
       - name: Build (Gradle, skip tests)
         run: ./gradlew clean build -x test
+
+      - name: Build Docker image
+        run: |
+          docker build -t garden-test:${{ github.sha }} .
+
+      - name: Save image as tar.gz
+        run: |
+          docker save garden-test:${{ github.sha }} | gzip > garden-test-${{ github.sha }}.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "garden-test-${{ github.sha }}.tar.gz"
+          target: "/tmp"
+
+      - name: Load image & Deploy (TEST 8081)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            gunzip -c /tmp/garden-test-${{ github.sha }}.tar.gz | docker load
+            /usr/local/bin/garden-deploy-test garden-test:${{ github.sha }} "${{ secrets.HEALTH_PATH }}"
+            rm -f /tmp/garden-test-${{ github.sha }}.tar.gz

@@ -10,6 +10,8 @@ import com.gdg.backend.api.goal.dto.CreateTaskResponseDto;
 import com.gdg.backend.api.goal.dto.GoalListResponseDto;
 import com.gdg.backend.api.goal.dto.TaskResponseDto;
 import com.gdg.backend.api.goal.service.GoalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +33,16 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goals")
+@Tag(name = "목표 관리 컨틀롤러 입니다.")
 public class GoalController {
 
     private final GoalService goalService;
 
     //목표
+    @Operation(
+            summary = "목표 관리 생성",
+            description = "목표 관리를 생성하는 컨트롤러입니다."
+    )
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateGoalResponseDto>> createGoal(
             @Valid @RequestBody CreateGoalRequestDto req,
@@ -46,6 +53,10 @@ public class GoalController {
         return ApiResponse.success(SuccessCode.GOAL_CREATED, res);
     }
 
+    @Operation(
+            summary = "목표 목록 조회",
+            description = "유저의 목표 목록을 페이지 단위로 조회합니다."
+    )
     @GetMapping("/lists")
     public ResponseEntity<ApiResponse<Page<GoalListResponseDto>>> getGoals(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -54,6 +65,10 @@ public class GoalController {
         return ApiResponse.success(SuccessCode.GOAL_LIST_SUCCESS,goalService.getGoals(userPrincipal.userId(), page));
     }
 
+    @Operation(
+            summary = "목표 삭제",
+            description = "지정한 목표를 삭제합니다."
+    )
     @DeleteMapping("/delete/{goalId}")
     public ResponseEntity<ApiResponse<Object>> deleteGoal(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -65,6 +80,10 @@ public class GoalController {
     }
 
     //과제
+    @Operation(
+            summary = "과제 생성",
+            description = "지정한 목표에 과제를 생성합니다."
+    )
     @PostMapping("/create/{goalId}/task")
     public ResponseEntity<ApiResponse<CreateTaskResponseDto>> createTask(
             @Valid @RequestBody CreateTaskRequestDto req,
@@ -76,6 +95,10 @@ public class GoalController {
         return ApiResponse.success(SuccessCode.TASK_CREATED, res);
     }
 
+    @Operation(
+            summary = "과제 목록 조회",
+            description = "지정한 목표의 과제 목록을 조회합니다."
+    )
     @GetMapping("/lists/{goalId}/task")
     public ResponseEntity<ApiResponse<List<TaskResponseDto>>> getTasks(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -84,6 +107,10 @@ public class GoalController {
         return ApiResponse.success(SuccessCode.TASK_LIST_SUCCESS, goalService.getTasks(userPrincipal.userId(), goalId));
     }
 
+    @Operation(
+            summary = "과제 체크 상태 변경",
+            description = "지정한 과제의 체크 상태를 변경합니다."
+    )
     @PatchMapping("/{goalId}/task/{taskId}/checkbox")
     public ResponseEntity<ApiResponse<Object>> checkTask(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -95,6 +122,10 @@ public class GoalController {
         return ApiResponse.success(SuccessCode.TASK_CHECKBOX_UPDATE);
     }
 
+    @Operation(
+            summary = "과제 삭제",
+            description = "지정한 과제를 삭제합니다."
+    )
     @DeleteMapping("/delete/{goalId}/task/{taskId}")
     public ResponseEntity<ApiResponse<Object>> deleteTask(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
