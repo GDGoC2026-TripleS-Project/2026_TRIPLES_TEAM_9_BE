@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
         String name = ex.getName();
         String message = (name == null || name.isBlank())
                 ? INVALID_REQUEST_MESSAGE
-                : name + "가 올바르지 않습니다.";
+                : name + "(이)가 올바르지 않습니다.";
         return ApiResponse.error(ErrorCode.INVALID_REQUEST, message);
     }
 
