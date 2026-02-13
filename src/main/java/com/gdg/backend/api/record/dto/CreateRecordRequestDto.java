@@ -28,7 +28,7 @@ public class CreateRecordRequestDto {
 
     //내용
     @NotBlank(message = "content 입력은 필수입니다.")
-    @Size(max = 10000, message = "content는 최대 10,000자입니다.")
+    @Size(max = 20000, message = "content는 최대 20,000자입니다.")
     private String content;
 
     //키워드 리스트
