@@ -58,7 +58,7 @@ public class Record {
 
     //학습기록 내용
     @Lob
-    @Column(name = "record_content", nullable = false)
+    @Column(name = "record_content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     //학습기록 키워드
