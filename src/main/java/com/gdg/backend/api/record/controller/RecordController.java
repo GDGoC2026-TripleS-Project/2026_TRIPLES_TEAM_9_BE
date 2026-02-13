@@ -11,6 +11,8 @@ import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
 import com.gdg.backend.api.record.service.RecordService;
 import com.gdg.backend.api.global.response.ApiResponse;
 import com.gdg.backend.api.global.security.UserPrincipal;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +32,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/record")
+@Tag(name = "학습 기록 컨트롤러")
 public class RecordController {
 
     private final RecordService recordService;
 
+    @Operation(
+            summary = "학습 기록 생성",
+            description = "학습 기록을 생성합니다."
+    )
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateRecordResponseDto>> create(
             @Valid @RequestBody CreateRecordRequestDto req,
@@ -45,7 +52,10 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_CREATED, res);
     }
 
-    //학습기록 전체/카테고리별 조회
+    @Operation(
+            summary = "학습 기록 목록 조회",
+            description = "학습 기록을 전체 또는 카테고리별로 페이지 단위 조회합니다."
+    )
     @GetMapping("/lists")
     public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getMyRecords(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -55,7 +65,10 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getMyRecords(userPrincipal.userId(), page, category));
     }
 
-    //학습기록 세부 정보 조회
+    @Operation(
+            summary = "학습 기록 상세 조회",
+            description = "지정한 학습 기록의 상세 정보를 조회합니다."
+    )
     @GetMapping("/details/{recordId}")
     public ResponseEntity<ApiResponse<RecordDetailResponseDto>> getRecordDetails(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -64,7 +77,10 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_DETAILS_SUCCESS, recordService.getRecordDetails(userPrincipal.userId(), recordId));
     }
 
-    //성공 시 수정된 값이 반환됨
+    @Operation(
+            summary = "학습 기록 수정",
+            description = "지정한 학습 기록의 내용을 수정합니다."
+    )
     @PatchMapping("/update/{recordId}")
     public ResponseEntity<ApiResponse<UpdateRecordDetailResponseDto>> updateRecordDetails(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -76,7 +92,10 @@ public class RecordController {
         return ApiResponse.success(SuccessCode.RECORD_UPDATE, res);
     }
 
-    //성공 시 data는 null 값 반환됨
+    @Operation(
+            summary = "학습 기록 삭제",
+            description = "지정한 학습 기록을 삭제합니다."
+    )
     @DeleteMapping("/delete/{recordId}")
     public ResponseEntity<ApiResponse<Object>> deleteRecord(
             @AuthenticationPrincipal UserPrincipal userPrincipal,

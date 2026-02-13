@@ -33,15 +33,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goals")
-@Tag(name = "목표 관리 컨틀롤러 입니다.")
+@Tag(name = "목표 관리 컨트롤러")
 public class GoalController {
 
     private final GoalService goalService;
 
     //목표
     @Operation(
-            summary = "목표 관리 생성",
-            description = "목표 관리를 생성하는 컨트롤러입니다."
+            summary = "목표 생성",
+            description = "목표를 생성합니다."
     )
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<CreateGoalResponseDto>> createGoal(
