@@ -59,11 +59,23 @@ public class RecordController {
     @GetMapping("/lists")
     public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getMyRecords(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(required = false) Category category
-            ){
-        return ApiResponse.success(SuccessCode.RECORD_LIST_SUCCESS,recordService.getMyRecords(userPrincipal.userId(), page, category));
+            @RequestParam(defaultValue = "1") @Min(1) int page,
+            @RequestParam(defaultValue = "4") @Min(1) int size,
+            @RequestParam(required = false) String category
+    ) {
+        Category parsedCategory = null;
+        if (category != null && !category.isBlank()) {
+            parsedCategory = Category.valueOf(category.toUpperCase());
+        }
+
+        int zeroBasedPage = page - 1;
+
+        return ApiResponse.success(
+                SuccessCode.RECORD_LIST_SUCCESS,
+                recordService.getMyRecords(userPrincipal.userId(), zeroBasedPage, size, parsedCategory)
+        );
     }
+
 
     @Operation(
             summary = "학습 기록 상세 조회",
