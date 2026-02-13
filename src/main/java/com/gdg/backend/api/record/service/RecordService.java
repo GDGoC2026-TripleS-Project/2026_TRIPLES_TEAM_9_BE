@@ -58,23 +58,20 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RecordListResponseDto> getMyRecords(Long userId, int page, Category category) {
+    public Page<RecordListResponseDto> getMyRecords(Long userId, int page, int size, Category category) {
         Pageable pageable = PageRequest.of(
                 page,
-                PAGE_SIZE,
+                size,
                 Sort.by(Sort.Direction.DESC, "learningDate")
         );
 
-        Page<Record> records;
-
-        if (category == null) {
-            records = recordRepository.findByUserId(userId, pageable);
-        } else {
-            records = recordRepository.findByUserIdAndCategory(userId, category, pageable);
-        }
+        Page<Record> records = (category == null)
+                ? recordRepository.findByUserId(userId, pageable)
+                : recordRepository.findByUserIdAndCategory(userId, category, pageable);
 
         return records.map(RecordListResponseDto::from);
     }
+
 
     @Transactional(readOnly = true)
     public RecordDetailResponseDto getRecordDetails(Long userId, Long recordId) {

@@ -16,6 +16,7 @@ public class RecordListResponseDto {
     private LocalDate learningDate;
     private Category category;
     private String title;
+    private String content;
     private String contentPreview;
     private List<String> keywords;
 
@@ -25,6 +26,7 @@ public class RecordListResponseDto {
                 record.getLearningDate(),
                 record.getCategory(),
                 record.getTitle(),
+                record.getContent(),
                 extractFirstLine(record.getContent()),
                 record.getKeywordNames()
         );
