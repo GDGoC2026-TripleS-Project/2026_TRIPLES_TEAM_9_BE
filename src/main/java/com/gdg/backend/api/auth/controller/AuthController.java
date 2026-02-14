@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -36,8 +37,11 @@ public class AuthController {
     private static final String REFRESH_COOKIE_NAME = "refreshToken";
     private static final String COOKIE_PATH = "/";
 
-    private final boolean cookieSecure = false;
-    private final String cookieSameSite = "Lax";
+    @Value("${auth.cookie.secure:false}")
+    private boolean cookieSecure;
+
+    @Value("${auth.cookie.same-site:Lax}")
+    private String cookieSameSite;
 
     @Operation(summary = "OIDC 로그인", description = "기존 유저 로그인 입니다.")
     @PostMapping("/login")

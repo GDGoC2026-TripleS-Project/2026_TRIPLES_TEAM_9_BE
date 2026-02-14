@@ -65,11 +65,12 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
+        configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:8080",
                 "http://127.0.0.1:8080",
                 "http://localhost:3000",
-                "https://2026-triples-team-9-fe.vercel.app"
+                "https://2026-triples-team-9-fe.vercel.app",
+                "https://*.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

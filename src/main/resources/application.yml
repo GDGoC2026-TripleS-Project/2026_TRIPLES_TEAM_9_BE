@@ -82,4 +82,7 @@ admin:
     provider-id: ${KAKAO_PROVIDER_ID}
     oauth-provider: KAKAO
 
-
+auth:
+  cookie:
+    secure: ${AUTH_COOKIE_SECURE:false}
+    same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
