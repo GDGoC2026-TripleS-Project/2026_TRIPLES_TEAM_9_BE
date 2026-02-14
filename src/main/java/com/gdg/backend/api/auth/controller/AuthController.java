@@ -11,9 +11,11 @@ import com.gdg.backend.api.global.jwt.TokenProvider;
 import com.gdg.backend.api.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -42,6 +45,9 @@ public class AuthController {
 
     @Value("${auth.cookie.same-site:Lax}")
     private String cookieSameSite;
+
+    @Value("${auth.cookie.domain:}")
+    private String cookieDomain;
 
     @Operation(summary = "OIDC 로그인", description = "기존 유저 로그인 입니다.")
     @PostMapping("/login")
@@ -84,8 +90,10 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthTokenResponseDto>> refresh(
             @CookieValue(name = REFRESH_COOKIE_NAME, required = false) String refreshToken,
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
+        logRefreshRequest(request, refreshToken);
         AuthIssueResult result = authService.refresh(refreshToken);
         setRefreshCookie(response, result.tokens().refreshToken());
 
@@ -98,7 +106,7 @@ public class AuthController {
     @Operation(summary = "로그아웃", description = "refreshToken 쿠키를 삭제합니다.")
     @DeleteMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
-        cookieUtil.deleteCookie(response, REFRESH_COOKIE_NAME, cookieSecure, cookieSameSite, COOKIE_PATH);
+        cookieUtil.deleteCookie(response, REFRESH_COOKIE_NAME, cookieSecure, cookieSameSite, COOKIE_PATH, cookieDomain);
         return ApiResponse.success(SuccessCode.LOGOUT_SUCCESS, null);
     }
 
@@ -124,7 +132,23 @@ public class AuthController {
                 maxAgeSeconds,
                 cookieSecure,
                 cookieSameSite,
-                COOKIE_PATH
+                COOKIE_PATH,
+                cookieDomain
+        );
+    }
+
+    private void logRefreshRequest(HttpServletRequest request, String refreshToken) {
+        String origin = request.getHeader("Origin");
+        String referer = request.getHeader("Referer");
+        boolean hasCookieHeader = request.getHeader("Cookie") != null;
+        boolean hasRefreshToken = refreshToken != null && !refreshToken.isBlank();
+
+        log.info(
+                "refresh request: origin={}, referer={}, cookieHeaderPresent={}, refreshCookiePresent={}",
+                origin,
+                referer,
+                hasCookieHeader,
+                hasRefreshToken
         );
     }
 }

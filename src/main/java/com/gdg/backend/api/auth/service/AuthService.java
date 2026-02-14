@@ -15,11 +15,13 @@ import com.gdg.backend.api.user.domain.Role;
 import com.gdg.backend.api.user.domain.User;
 import com.gdg.backend.api.user.domain.UserStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -69,6 +71,7 @@ public class AuthService {
     @Transactional
     public AuthIssueResult refresh(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
+            log.warn("refresh failed: missing refresh token");
             throw new AuthException(AuthErrorCode.NO_REFRESH_TOKEN);
         }
 
@@ -78,6 +81,7 @@ public class AuthService {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND));
 
         if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+            log.warn("refresh failed: invalid refresh token for userId={}", userId);
             throw new AuthException(AuthErrorCode.INVALID_REFRESH_TOKEN);
         }
 

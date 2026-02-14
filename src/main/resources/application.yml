@@ -84,5 +84,6 @@ admin:
 
 auth:
   cookie:
-    secure: ${AUTH_COOKIE_SECURE:false}
-    same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
+    secure: ${AUTH_COOKIE_SECURE:true}
+    same-site: ${AUTH_COOKIE_SAME_SITE:None}
+    domain: ${AUTH_COOKIE_DOMAIN:}

@@ -13,15 +13,21 @@ public class CookieUtil {
                                   long maxAgeSeconds,
                                   boolean secure,
                                   String sameSite,
-                                  String path){
+                                  String path,
+                                  String domain){
 
-        ResponseCookie cookie  = ResponseCookie.from(name, value)
+        ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(secure)
                 .path(path)
                 .maxAge(maxAgeSeconds)
-                .sameSite(sameSite)
-                .build();
+                .sameSite(sameSite);
+
+        if (domain != null && !domain.isBlank()) {
+            builder.domain(domain);
+        }
+
+        ResponseCookie cookie = builder.build();
 
         response.addHeader("Set-Cookie", cookie.toString());
     }
@@ -30,15 +36,21 @@ public class CookieUtil {
                                   String name,
                                   boolean secure,
                                   String sameSite,
-                                  String path){
+                                  String path,
+                                  String domain){
 
-        ResponseCookie cookie  = ResponseCookie.from(name, "")
+        ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(name, "")
                 .httpOnly(true)
                 .secure(secure)
                 .path(path)
                 .maxAge(0)
-                .sameSite(sameSite)
-                .build();
+                .sameSite(sameSite);
+
+        if (domain != null && !domain.isBlank()) {
+            builder.domain(domain);
+        }
+
+        ResponseCookie cookie = builder.build();
 
         response.addHeader("Set-Cookie", cookie.toString());
     }
