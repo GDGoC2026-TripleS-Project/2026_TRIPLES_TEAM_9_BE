@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +32,35 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
             ORDER BY r.learningDate DESC, r.id DESC
             """)
     List<Record> findRecentByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("select count(r) from Record r where r.user.id = :userId")
+    long countRecords(@Param("userId") Long userId);
+
+    @Query("""
+      select count(distinct r.learningDate)
+      from Record r
+      where r.user.id = :userId
+    """)
+    long countAttendanceDays(@Param("userId") Long userId);
+
+    @Query("""
+      select count(distinct r.learningDate)
+      from Record r
+      where r.user.id = :userId
+        and r.learningDate between :from and :to
+    """)
+    long countAttendanceDaysBetween(
+        @Param("userId") Long userId,
+        @Param("from") LocalDate from,
+        @Param("to") LocalDate to
+    );
+
+    @Query("""
+      select distinct r.learningDate
+      from Record r
+      where r.user.id = :userId
+      order by r.learningDate desc
+    """)
+    List<LocalDate> findAttendanceDatesDesc(@Param("userId") Long userId);
+
 }
