@@ -86,4 +86,11 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi achievements(){
+        return GroupedOpenApi.builder()
+                .group("Achievements API")
+                .pathsToMatch("/achievements/**")
+                .build();
+    }
 }
