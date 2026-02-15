@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/achievements")
+@RequestMapping("/achievements")
 @Tag(name = "업적")
 public class AchievementController {
 
