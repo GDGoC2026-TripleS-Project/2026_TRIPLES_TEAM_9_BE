@@ -81,7 +81,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi goals(){
         return GroupedOpenApi.builder()
-                .group("goals API")
+                .group("Goals API")
                 .pathsToMatch("/goals/**")
                 .build();
     }
