@@ -63,4 +63,24 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     """)
     List<LocalDate> findAttendanceDatesDesc(@Param("userId") Long userId);
 
+    @Query("""
+      select count(r)
+      from Record r
+      where r.user.id = :userId
+      group by r.learningDate
+    """)
+    List<Long> countRecordsByLearningDate(@Param("userId") Long userId);
+
+    @Query("""
+      select count(r)
+      from Record r
+      where r.user.id = :userId
+        and function('hour', r.createdAt) between :fromHour and :toHour
+    """)
+    long countRecordsByCreatedHourBetween(
+        @Param("userId") Long userId,
+        @Param("fromHour") int fromHour,
+        @Param("toHour") int toHour
+    );
+
 }

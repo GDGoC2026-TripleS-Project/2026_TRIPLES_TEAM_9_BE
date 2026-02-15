@@ -3,6 +3,7 @@ package com.gdg.backend.api.achievements.service;
 import com.gdg.backend.api.achievements.domain.BadgeId;
 import com.gdg.backend.api.achievements.domain.UserBadge;
 import com.gdg.backend.api.achievements.dto.AchievementResponseDto;
+import com.gdg.backend.api.achievements.dto.AchievementSection;
 import com.gdg.backend.api.achievements.dto.BadgeCatalog;
 import com.gdg.backend.api.achievements.dto.BadgeDef;
 import com.gdg.backend.api.achievements.dto.BadgeItem;
@@ -30,17 +31,22 @@ public class AchievementService {
     private final RecordRepository recordRepository;
     private final UserBadgeRepository userBadgeRepository;
 
+    private static final int NIGHT_OWL_START_HOUR = 0;
+    private static final int NIGHT_OWL_END_HOUR = 5;
+    private static final int MORNING_PERSON_START_HOUR = 6;
+    private static final int MORNING_PERSON_END_HOUR = 9;
+
     @Transactional
     public AchievementResponseDto getAchievements(Long userId) {
 
         Stats stats = loadStats(userId);
         Map<BadgeId, UserBadge> unlockedMap = loadUnlockedMap(userId);
-        Map<String, List<BadgeItem>> sectionMap = buildBadgeItems(userId, stats, unlockedMap);
+        Map<AchievementSection, List<BadgeItem>> sectionMap = buildBadgeItems(userId, stats, unlockedMap);
 
         List<Section> sections = List.of(
-                new Section(BadgeCatalog.CATEGORY_LEARNING, "학습", sectionMap.getOrDefault(BadgeCatalog.CATEGORY_LEARNING, List.of())),
-                new Section(BadgeCatalog.CATEGORY_ATTENDANCE, "출석", sectionMap.getOrDefault(BadgeCatalog.CATEGORY_ATTENDANCE, List.of())),
-                new Section(BadgeCatalog.CATEGORY_CHALLENGE, "도전", sectionMap.getOrDefault(BadgeCatalog.CATEGORY_CHALLENGE, List.of()))
+                new Section(AchievementSection.LEARNING.code(), AchievementSection.LEARNING.title(), sectionMap.getOrDefault(AchievementSection.LEARNING, List.of())),
+                new Section(AchievementSection.ATTENDANCE.code(), AchievementSection.ATTENDANCE.title(), sectionMap.getOrDefault(AchievementSection.ATTENDANCE, List.of())),
+                new Section(AchievementSection.CHALLENGE.code(), AchievementSection.CHALLENGE.title(), sectionMap.getOrDefault(AchievementSection.CHALLENGE, List.of()))
         );
 
         int total = BadgeCatalog.DEFS.size();
@@ -59,7 +65,29 @@ public class AchievementService {
         LocalDate to = ym.atEndOfMonth();
         long thisMonthAttendance = recordRepository.countAttendanceDaysBetween(userId, from, to);
 
-        return new Stats(recordCount, attendanceDays, streak, thisMonthAttendance);
+        List<Long> perDayCounts = recordRepository.countRecordsByLearningDate(userId);
+        long maxPerDay = perDayCounts.stream().mapToLong(Long::longValue).max().orElse(0);
+
+        long nightOwlCount = recordRepository.countRecordsByCreatedHourBetween(
+                userId,
+                NIGHT_OWL_START_HOUR,
+                NIGHT_OWL_END_HOUR
+        );
+        long morningPersonCount = recordRepository.countRecordsByCreatedHourBetween(
+                userId,
+                MORNING_PERSON_START_HOUR,
+                MORNING_PERSON_END_HOUR
+        );
+
+        return new Stats(
+                recordCount,
+                attendanceDays,
+                streak,
+                thisMonthAttendance,
+                maxPerDay,
+                nightOwlCount,
+                morningPersonCount
+        );
     }
 
     private Map<BadgeId, UserBadge> loadUnlockedMap(Long userId) {
@@ -68,12 +96,12 @@ public class AchievementService {
                 .collect(Collectors.toMap(UserBadge::getBadgeId, b -> b));
     }
 
-    private Map<String, List<BadgeItem>> buildBadgeItems(
+    private Map<AchievementSection, List<BadgeItem>> buildBadgeItems(
             Long userId,
             Stats stats,
             Map<BadgeId, UserBadge> unlockedMap
     ) {
-        Map<String, List<BadgeItem>> sectionMap = new LinkedHashMap<>();
+        Map<AchievementSection, List<BadgeItem>> sectionMap = new LinkedHashMap<>();
         for (BadgeDef def : BadgeCatalog.DEFS) {
             int progress = progressOf(def.id(), stats);
             boolean shouldUnlock = progress >= def.target();
@@ -101,7 +129,7 @@ public class AchievementService {
                     def.target()
             );
 
-            sectionMap.computeIfAbsent(def.category(), k -> new ArrayList<>()).add(item);
+            sectionMap.computeIfAbsent(def.section(), k -> new ArrayList<>()).add(item);
         }
         return sectionMap;
     }
@@ -112,7 +140,9 @@ public class AchievementService {
             case ATTENDANCE_1 -> (int) stats.attendanceDays();
             case STREAK_7 -> stats.streak();
             case MONTH_CHAMPION -> (int) stats.thisMonthAttendance();
-            case FAST_LEARNER, NIGHT_OWL, MORNING_PERSON -> 0;
+            case FAST_LEARNER -> (int) stats.maxRecordsPerDay();
+            case NIGHT_OWL -> (int) stats.nightOwlCount();
+            case MORNING_PERSON -> (int) stats.morningPersonCount();
         };
     }
 
@@ -146,7 +176,10 @@ public class AchievementService {
             long recordCount,
             long attendanceDays,
             int streak,
-            long thisMonthAttendance
+            long thisMonthAttendance,
+            long maxRecordsPerDay,
+            long nightOwlCount,
+            long morningPersonCount
     ) {
     }
 }

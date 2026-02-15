@@ -1,5 +1,6 @@
 package com.gdg.backend.api.record.domain;
 
+import com.gdg.backend.api.global.common.BaseTimeEntity;
 import com.gdg.backend.api.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 @Table(name = "records")
-public class Record {
+public class Record extends BaseTimeEntity {
     //학습기록 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
