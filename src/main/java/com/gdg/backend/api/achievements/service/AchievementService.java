@@ -2,12 +2,12 @@ package com.gdg.backend.api.achievements.service;
 
 import com.gdg.backend.api.achievements.domain.BadgeId;
 import com.gdg.backend.api.achievements.domain.UserBadge;
+import com.gdg.backend.api.achievements.dto.AchievementCategory;
 import com.gdg.backend.api.achievements.dto.AchievementResponseDto;
 import com.gdg.backend.api.achievements.dto.AchievementSection;
-import com.gdg.backend.api.achievements.dto.BadgeCatalog;
 import com.gdg.backend.api.achievements.dto.BadgeDef;
 import com.gdg.backend.api.achievements.dto.BadgeItem;
-import com.gdg.backend.api.achievements.dto.Section;
+import com.gdg.backend.api.achievements.dto.Stats;
 import com.gdg.backend.api.achievements.dto.Summary;
 import com.gdg.backend.api.achievements.repository.UserBadgeRepository;
 import com.gdg.backend.api.record.repository.RecordRepository;
@@ -41,15 +41,15 @@ public class AchievementService {
 
         Stats stats = loadStats(userId);
         Map<BadgeId, UserBadge> unlockedMap = loadUnlockedMap(userId);
-        Map<AchievementSection, List<BadgeItem>> sectionMap = buildBadgeItems(userId, stats, unlockedMap);
+        Map<AchievementCategory, List<BadgeItem>> sectionMap = buildBadgeItems(userId, stats, unlockedMap);
 
-        List<Section> sections = List.of(
-                new Section(AchievementSection.LEARNING.code(), AchievementSection.LEARNING.title(), sectionMap.getOrDefault(AchievementSection.LEARNING, List.of())),
-                new Section(AchievementSection.ATTENDANCE.code(), AchievementSection.ATTENDANCE.title(), sectionMap.getOrDefault(AchievementSection.ATTENDANCE, List.of())),
-                new Section(AchievementSection.CHALLENGE.code(), AchievementSection.CHALLENGE.title(), sectionMap.getOrDefault(AchievementSection.CHALLENGE, List.of()))
+        List<AchievementSection> sections = List.of(
+                AchievementSection.of(AchievementCategory.LEARNING, sectionMap.getOrDefault(AchievementCategory.LEARNING, List.of())),
+                AchievementSection.of(AchievementCategory.ATTENDANCE, sectionMap.getOrDefault(AchievementCategory.ATTENDANCE, List.of())),
+                AchievementSection.of(AchievementCategory.CHALLENGE, sectionMap.getOrDefault(AchievementCategory.CHALLENGE, List.of()))
         );
 
-        int total = BadgeCatalog.DEFS.size();
+        int total = BadgeDef.values().length;
         int unlockedCount = unlockedMap.size();
 
         return new AchievementResponseDto(new Summary(total, unlockedCount), sections);
@@ -96,40 +96,40 @@ public class AchievementService {
                 .collect(Collectors.toMap(UserBadge::getBadgeId, b -> b));
     }
 
-    private Map<AchievementSection, List<BadgeItem>> buildBadgeItems(
+    private Map<AchievementCategory, List<BadgeItem>> buildBadgeItems(
             Long userId,
             Stats stats,
             Map<BadgeId, UserBadge> unlockedMap
     ) {
-        Map<AchievementSection, List<BadgeItem>> sectionMap = new LinkedHashMap<>();
-        for (BadgeDef def : BadgeCatalog.DEFS) {
-            int progress = progressOf(def.id(), stats);
-            boolean shouldUnlock = progress >= def.target();
+        Map<AchievementCategory, List<BadgeItem>> sectionMap = new LinkedHashMap<>();
+        for (BadgeDef def : BadgeDef.values()) {
+            int progress = progressOf(def.getId(), stats);
+            boolean shouldUnlock = progress >= def.getTarget();
 
-            UserBadge stored = unlockedMap.get(def.id());
+            UserBadge stored = unlockedMap.get(def.getId());
             LocalDateTime unlockedAt = stored != null ? stored.getUnlockedAt() : null;
             boolean unlocked = stored != null || shouldUnlock;
 
             if (stored == null && shouldUnlock) {
                 UserBadge saved = userBadgeRepository.save(
-                        UserBadge.of(userId, def.id(), LocalDateTime.now())
+                        UserBadge.of(userId, def.getId(), LocalDateTime.now())
                 );
-                unlockedMap.put(def.id(), saved);
+                unlockedMap.put(def.getId(), saved);
                 unlockedAt = saved.getUnlockedAt();
                 unlocked = true;
             }
 
             BadgeItem item = new BadgeItem(
-                    def.id().name(),
-                    def.title(),
-                    def.description(),
+                    def.getId().name(),
+                    def.getTitle(),
+                    def.getDescription(),
                     unlocked,
                     unlockedAt,
-                    Math.min(progress, def.target()),
-                    def.target()
+                    Math.min(progress, def.getTarget()),
+                    def.getTarget()
             );
 
-            sectionMap.computeIfAbsent(def.section(), k -> new ArrayList<>()).add(item);
+            sectionMap.computeIfAbsent(def.getSection(), k -> new ArrayList<>()).add(item);
         }
         return sectionMap;
     }
@@ -170,16 +170,5 @@ public class AchievementService {
             }
         }
         return streak;
-    }
-
-    private record Stats(
-            long recordCount,
-            long attendanceDays,
-            int streak,
-            long thisMonthAttendance,
-            long maxRecordsPerDay,
-            long nightOwlCount,
-            long morningPersonCount
-    ) {
     }
 }
