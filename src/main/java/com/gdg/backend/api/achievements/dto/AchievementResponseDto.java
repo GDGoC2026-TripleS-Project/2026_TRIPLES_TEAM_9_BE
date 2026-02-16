@@ -4,5 +4,5 @@ import java.util.List;
 
 public record AchievementResponseDto(
         Summary summary,
-        List<Section> sections) {
+        List<AchievementSection> sections) {
 }
