@@ -26,6 +26,7 @@ public enum SuccessCode {
     RECORD_CREATED(105, HttpStatus.CREATED, "학습기록이 정상적으로 생성되었습니다."),
     GOAL_CREATED(106, HttpStatus.CREATED, "목표가 정상적으로 생성되었습니다."),
     TASK_CREATED(107, HttpStatus.CREATED, "과제가 정상적으로 생성되었습니다."),
+    ACHIEVEMENT_SUCCESS(108, HttpStatus.OK, "뱃지 발급이 정상적으로 처리되었습니다."),
 
     //202
     UPDATE(200, HttpStatus.OK, "게시판 수정이 정상적으로 처리되었습니다."),
