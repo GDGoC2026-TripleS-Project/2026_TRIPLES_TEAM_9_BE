@@ -1,4 +1,4 @@
-package com.gdg.backend.api.achievements.dto;
+package com.gdg.backend.api.achievements.service;
 
 public record Stats(
         long recordCount,

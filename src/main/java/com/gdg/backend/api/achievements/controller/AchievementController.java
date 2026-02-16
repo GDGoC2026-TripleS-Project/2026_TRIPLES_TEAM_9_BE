@@ -1,6 +1,6 @@
 package com.gdg.backend.api.achievements.controller;
 
-import com.gdg.backend.api.achievements.dto.AchievementResponseDto;
+import com.gdg.backend.api.achievements.dto.response.AchievementResponseDto;
 import com.gdg.backend.api.achievements.service.AchievementService;
 import com.gdg.backend.api.global.code.SuccessCode;
 import com.gdg.backend.api.global.response.ApiResponse;
