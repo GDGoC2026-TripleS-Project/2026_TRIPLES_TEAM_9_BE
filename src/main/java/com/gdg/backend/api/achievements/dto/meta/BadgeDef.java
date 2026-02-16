@@ -1,4 +1,4 @@
-package com.gdg.backend.api.achievements.dto;
+package com.gdg.backend.api.achievements.dto.meta;
 
 import com.gdg.backend.api.achievements.domain.BadgeId;
 import lombok.AllArgsConstructor;

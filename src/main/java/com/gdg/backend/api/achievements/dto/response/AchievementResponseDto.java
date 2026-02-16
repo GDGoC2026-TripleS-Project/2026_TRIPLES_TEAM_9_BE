@@ -1,4 +1,4 @@
-package com.gdg.backend.api.achievements.dto;
+package com.gdg.backend.api.achievements.dto.response;
 
 import java.util.List;
 

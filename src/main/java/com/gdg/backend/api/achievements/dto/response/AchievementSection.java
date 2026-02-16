@@ -1,4 +1,6 @@
-package com.gdg.backend.api.achievements.dto;
+package com.gdg.backend.api.achievements.dto.response;
+
+import com.gdg.backend.api.achievements.dto.meta.AchievementCategory;
 
 import java.util.List;
 
