@@ -93,4 +93,12 @@ public class SwaggerConfig {
                 .pathsToMatch("/achievements/**")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi review() {
+        return GroupedOpenApi.builder()
+                .group("Review API")
+                .pathsToMatch(("/review/**"))
+                .build();
+    }
 }
