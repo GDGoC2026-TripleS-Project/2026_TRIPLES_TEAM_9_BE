@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/dashboard/**",
                                 "/mypage/**",
                                 "/goals/**",
-                                "/achievements/**"
+                                "/achievements/**",
+                                "/review/**"
                         ).authenticated()
                         .anyRequest().authenticated()
                 )
