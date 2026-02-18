@@ -17,6 +17,8 @@ public enum SuccessCode {
     RECORD_DETAILS_SUCCESS(6, HttpStatus.OK, "학습 기록 세부 정보 조회가 완료되었습니다."),
     GOAL_LIST_SUCCESS(7, HttpStatus.OK, "목표 조회가 완료되었습니다."),
     TASK_LIST_SUCCESS(8, HttpStatus.OK, "과제 조회가 완료되었습니다."),
+    REVIEW_TODAY_SUCCESS(9, HttpStatus.OK, "복습 추천 조회가 완료되었습니다."),
+    REVIEW_VIEWED_SUCCESS(10, HttpStatus.OK, "복습 추천 기록 저장이 완료되었습니다."),
 
     //201
     CREATED(100, HttpStatus.CREATED, "게시판 작성 요청이 정상적으로 처리되었습니다."),

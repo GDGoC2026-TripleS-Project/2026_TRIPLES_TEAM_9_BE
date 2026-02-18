@@ -33,6 +33,21 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
             """)
     List<Record> findRecentByUserId(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("""
+      select r
+      from Record r
+      where r.user.id = :userId
+        and r.learningDate in :dates
+        and (:excludeIdsEmpty = true or r.id not in :excludeIds)
+      order by r.learningDate desc, r.id desc
+    """)
+    List<Record> findReviewCandidatesExcludeIds(
+            @Param("userId") Long userId,
+            @Param("dates") List<LocalDate> dates,
+            @Param("excludeIds") List<Long> excludeIds,
+            @Param("excludeIdsEmpty") boolean excludeIdsEmpty
+    );
+
     @Query("select count(r) from Record r where r.user.id = :userId")
     long countRecords(@Param("userId") Long userId);
 
