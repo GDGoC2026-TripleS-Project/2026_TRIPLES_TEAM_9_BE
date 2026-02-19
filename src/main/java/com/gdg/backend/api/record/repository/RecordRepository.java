@@ -19,6 +19,41 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
     Page<Record> findByUserIdAndCategory(Long userId, Category category, Pageable pageable);
 
+    @Query(
+            value = """
+                    select distinct r
+                    from Record r
+                    left join r.keywords k
+                    where r.user.id = :userId
+                      and (:category is null or r.category = :category)
+                      and (
+                        :keyword is null
+                        or lower(r.title) like lower(concat('%', :keyword, '%'))
+                        or lower(r.content) like lower(concat('%', :keyword, '%'))
+                        or lower(k.name) like lower(concat('%', :keyword, '%'))
+                      )
+                    """,
+            countQuery = """
+                    select count(distinct r)
+                    from Record r
+                    left join r.keywords k
+                    where r.user.id = :userId
+                      and (:category is null or r.category = :category)
+                      and (
+                        :keyword is null
+                        or lower(r.title) like lower(concat('%', :keyword, '%'))
+                        or lower(r.content) like lower(concat('%', :keyword, '%'))
+                        or lower(k.name) like lower(concat('%', :keyword, '%'))
+                      )
+                    """
+    )
+    Page<Record> searchRecords(
+            @Param("userId") Long userId,
+            @Param("category") Category category,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
     Optional<Record> findByIdAndUserId(Long recordId, Long userId);
 
     @Modifying

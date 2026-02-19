@@ -5,7 +5,7 @@ import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.record.dto.CreateRecordResponseDto;
 import com.gdg.backend.api.record.dto.RecordDetailResponseDto;
-import com.gdg.backend.api.record.dto.RecordListResponseDto;
+import com.gdg.backend.api.record.dto.RecordListPageResponseDto;
 import com.gdg.backend.api.record.dto.UpdateRecordDetailRequestDto;
 import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
 import com.gdg.backend.api.record.service.RecordService;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,11 +56,13 @@ public class RecordController {
             description = "학습 기록을 전체 또는 카테고리별로 페이지 단위 조회합니다."
     )
     @GetMapping("/lists")
-    public ResponseEntity<ApiResponse<Page<RecordListResponseDto>>> getMyRecords(
+    public ResponseEntity<ApiResponse<RecordListPageResponseDto>> getMyRecords(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestParam(defaultValue = "1") @Min(1) int page,
             @RequestParam(defaultValue = "4") @Min(1) int size,
-            @RequestParam(required = false) String category
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String keyword
     ) {
         Category parsedCategory = null;
         if (category != null && !category.isBlank()) {
@@ -72,7 +73,7 @@ public class RecordController {
 
         return ApiResponse.success(
                 SuccessCode.RECORD_LIST_SUCCESS,
-                recordService.getMyRecords(userPrincipal.userId(), zeroBasedPage, size, parsedCategory)
+                recordService.getMyRecords(userPrincipal.userId(), zeroBasedPage, size, parsedCategory, search, keyword)
         );
     }
 

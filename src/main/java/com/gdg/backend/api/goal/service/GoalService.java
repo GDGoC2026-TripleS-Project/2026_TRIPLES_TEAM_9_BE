@@ -32,8 +32,6 @@ public class GoalService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
 
-    private static final int PAGE_SIZE = 3;
-
     //목표
     @Transactional
     public CreateGoalResponseDto createGoal(Long userId, CreateGoalRequestDto req) {
@@ -48,10 +46,16 @@ public class GoalService {
     }
 
     @Transactional(readOnly = true)
-    public Page<GoalListResponseDto> getGoals(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+    public Page<GoalListResponseDto> getGoals(Long userId, int page, int size, String search) {
+        String searchTerm = resolveSearchTerm(search);
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "createdAt")
+                        .and(Sort.by(Sort.Direction.DESC, "id"))
+        );
 
-        return goalRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
+        return goalRepository.searchGoals(userId, searchTerm, pageable)
                 .map(GoalListResponseDto::from);
     }
 
@@ -110,5 +114,13 @@ public class GoalService {
         }
 
         taskRepository.delete(task);
+    }
+
+    private String resolveSearchTerm(String search) {
+        if (search == null) {
+            return null;
+        }
+        String term = search.trim();
+        return term.isEmpty() ? null : term;
     }
 }

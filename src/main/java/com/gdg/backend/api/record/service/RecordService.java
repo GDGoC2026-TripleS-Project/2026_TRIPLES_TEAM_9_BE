@@ -8,6 +8,7 @@ import com.gdg.backend.api.record.domain.Category;
 import com.gdg.backend.api.record.dto.CreateRecordRequestDto;
 import com.gdg.backend.api.record.dto.CreateRecordResponseDto;
 import com.gdg.backend.api.record.dto.RecordDetailResponseDto;
+import com.gdg.backend.api.record.dto.RecordListPageResponseDto;
 import com.gdg.backend.api.record.dto.RecordListResponseDto;
 import com.gdg.backend.api.record.dto.UpdateRecordDetailRequestDto;
 import com.gdg.backend.api.record.dto.UpdateRecordDetailResponseDto;
@@ -33,8 +34,6 @@ public class RecordService {
     private final UserRepository userRepository;
     private final KeywordRepository keywordRepository;
 
-    private static final int PAGE_SIZE = 4;
-
     @Transactional
     public CreateRecordResponseDto create(Long userId, CreateRecordRequestDto req) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("유저를 찾을 수 없습니다."));
@@ -58,18 +57,32 @@ public class RecordService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RecordListResponseDto> getMyRecords(Long userId, int page, int size, Category category) {
+    public RecordListPageResponseDto getMyRecords(Long userId, int page, int size, Category category, String search, String keyword) {
+        String searchTerm = resolveSearchTerm(search, keyword);
         Pageable pageable = PageRequest.of(
                 page,
                 size,
                 Sort.by(Sort.Direction.DESC, "learningDate")
+                        .and(Sort.by(Sort.Direction.DESC, "id"))
         );
 
-        Page<Record> records = (category == null)
-                ? recordRepository.findByUserId(userId, pageable)
-                : recordRepository.findByUserIdAndCategory(userId, category, pageable);
+        Page<Record> records = recordRepository.searchRecords(userId, category, searchTerm, pageable);
+        List<RecordListResponseDto> items = records.map(RecordListResponseDto::from).getContent();
+        long totalElements = records.getTotalElements();
+        int totalPages = Math.max(records.getTotalPages(), 1);
+        int responsePage = page + 1;
+        boolean hasPrev = totalElements > 0 && responsePage > 1;
+        boolean hasNext = totalElements > 0 && responsePage < totalPages;
 
-        return records.map(RecordListResponseDto::from);
+        return new RecordListPageResponseDto(
+                items,
+                responsePage,
+                size,
+                totalPages,
+                totalElements,
+                hasNext,
+                hasPrev
+        );
     }
 
 
@@ -125,5 +138,14 @@ public class RecordService {
                 .map(keyword -> keywordRepository.findByName(keyword)
                         .orElseGet(() -> keywordRepository.save(new Keyword(keyword))))
                 .toList();
+    }
+
+    private String resolveSearchTerm(String search, String keyword) {
+        String term = (search != null && !search.isBlank()) ? search : keyword;
+        if (term == null) {
+            return null;
+        }
+        term = term.trim();
+        return term.isEmpty() ? null : term;
     }
 }
