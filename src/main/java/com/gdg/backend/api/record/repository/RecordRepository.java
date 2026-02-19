@@ -29,7 +29,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
                       and (
                         :keyword is null
                         or lower(r.title) like lower(concat('%', :keyword, '%'))
-                        or lower(r.content) like lower(concat('%', :keyword, '%'))
+                        or lower(cast(r.content as string)) like lower(concat('%', :keyword, '%'))
                         or lower(k.name) like lower(concat('%', :keyword, '%'))
                       )
                     """,
@@ -42,7 +42,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
                       and (
                         :keyword is null
                         or lower(r.title) like lower(concat('%', :keyword, '%'))
-                        or lower(r.content) like lower(concat('%', :keyword, '%'))
+                        or lower(cast(r.content as string)) like lower(concat('%', :keyword, '%'))
                         or lower(k.name) like lower(concat('%', :keyword, '%'))
                       )
                     """
