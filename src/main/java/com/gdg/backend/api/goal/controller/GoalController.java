@@ -60,9 +60,14 @@ public class GoalController {
     @GetMapping("/lists")
     public ResponseEntity<ApiResponse<Page<GoalListResponseDto>>> getGoals(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestParam(defaultValue = "0") @Min(0) int page
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "3") @Min(1) int size,
+            @RequestParam(required = false) String search
     ){
-        return ApiResponse.success(SuccessCode.GOAL_LIST_SUCCESS,goalService.getGoals(userPrincipal.userId(), page));
+        return ApiResponse.success(
+                SuccessCode.GOAL_LIST_SUCCESS,
+                goalService.getGoals(userPrincipal.userId(), page, size, search)
+        );
     }
 
     @Operation(
